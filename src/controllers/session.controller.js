@@ -14,7 +14,9 @@ const nodemailerUSER = config.nodemailerUSER
 const nodemailerPASS = config.nodemailerPASS
 
 export const postLogin = async (req, res) => {
-    res.cookie(JWT_COOKIE_NAME, req.user.token, signedCookie(JWT_PRIVATE_KEY)).redirect('/products/views') //en la cookie guardo el token. signedcockie es la cookie firmada
+    res
+    .cookie(JWT_COOKIE_NAME, req.user.token, signedCookie(JWT_PRIVATE_KEY))
+    .redirect('/products/views') //en la cookie guardo el token. signedcockie es la cookie firmada
 }
 
 export const getFailLogin = (req, res) => {

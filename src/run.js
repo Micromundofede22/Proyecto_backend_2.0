@@ -43,7 +43,7 @@ const run = (io, app) => {
     app.use("/session", sessionViewsRouter.getRouter());
     app.use("/products", passportCall("jwt"), productViewRouter.getRouter());
     app.use("/cart", passportCall("jwt"), cartViewRouter.getRouter());
-    app.use("/chat", passportCall("jwt"), handlePolicies("USER"), chatRouter.getRouter());
+    app.use("/chat", passportCall("jwt"), handlePolicies(["USER", "PREMIUM"]), chatRouter.getRouter());
     app.use("/mockingproducts", mockRouter.getRouter());
     app.use("/loggerTest", loggerRouter.getRouter());
     app.use("/mail", mailRouter.getRouter())

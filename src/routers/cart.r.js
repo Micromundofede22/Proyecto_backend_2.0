@@ -16,14 +16,14 @@ export default class CartRouter extends AppRouter{
 
         this.post('/', createCartController);
 
-        this.post("/:cid/product/:pid",handlePolicies("USER"), createInCartController);
+        this.post("/:cid/product/:pid",handlePolicies(["USER", "PREMIUM"]), createInCartController);
 
-        this.put("/:cid/product/:pid",handlePolicies("USER"), updateQuantityController);
+        this.put("/:cid/product/:pid",handlePolicies(["USER", "PREMIUM"]), updateQuantityController);
 
-        this.delete("/:cid/product/:pid", deleteOneProductController);
+        this.delete("/:cid/product/:pid",handlePolicies(["USER", "PREMIUM"]), deleteOneProductController);
 
         this.delete("/:cid",deleteCartController);
         
-        this.post("/:cid/purchase", purchaseController); 
+        this.post("/:cid/purchase",handlePolicies(["USER", "PREMIUM"]), purchaseController); 
     }
 }

@@ -70,10 +70,10 @@ const initializePassport = () => {
                 html: `Bienvenido usuario ${email}. Haz click en el siguiente enlace para verificar tu cuenta:
           <a href="http://localhost:8080/api/session/verify-user/${email}">Click Aquí</a>`
             }
-            if(email== ADMIN_EMAIL){
+            if (email == ADMIN_EMAIL) {
                 return done(null, result)
-            }else{
-                
+            } else {
+
                 await transporter.sendMail(message)
                 return done(null, result)
             }
@@ -92,10 +92,10 @@ const initializePassport = () => {
                 return done(null, false)
             }
             if (!isValidPassword(user, password)) return done(null, false)
-            if(user.status == "UNVERIFIED"){
+            if (user.status == "UNVERIFIED") {
                 console.log("Verifique la cuenta, haciendo click en el link que se envió a su email")
                 return done(null, false)
-            } 
+            }
 
             const token = generateToken(user) //generatetoken importado de utils, donde mete los datos del user en un token
             user.token = token //a user le agrego este atributo token, asi el user que me devuelve passport ya esta dentro de un token
@@ -179,7 +179,7 @@ const initializePassport = () => {
     )
     );
 
-        //JWT ESTRATEGY
+    //JWT ESTRATEGY
     // esta estrategia se usa en un middleware asi: ruta, middleware("jwt"), router
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([extractCookie]), //extractCookie importado de utils

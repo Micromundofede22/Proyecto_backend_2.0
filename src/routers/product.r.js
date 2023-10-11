@@ -15,10 +15,10 @@ export default class ProductRouter extends AppRouter {
 
         this.get("/:pid", getProductByIdController);
 
-        this.post('/', handlePolicies("ADMIN" || "PREMIUM"), createProductController);
+        this.post('/', handlePolicies(["ADMIN", "PREMIUM"]), createProductController);
 
-        this.put("/:pid", handlePolicies("ADMIN" || "PREMIUM"), updateProductController);
+        this.put("/:pid", handlePolicies(["ADMIN", "PREMIUM"]), updateProductController);
 
-        this.delete("/:pid", handlePolicies("ADMIN" || "PREMIUM"), deleteProductController);
+        this.delete("/:pid", handlePolicies(["ADMIN", "PREMIUM"]), deleteProductController);
     }
 }
