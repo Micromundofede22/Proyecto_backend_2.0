@@ -1,0 +1,40 @@
+[
+	{
+		"id": 2,
+		"title": "Fancia",
+		"description": "actualizado",
+		"price": 8500,
+		"code": "16",
+		"stock": 20,
+		"thumbnail": "http"
+	},
+	{
+		"id": 4,
+		"title": "Argentina",
+		"description": "terrario abierto",
+		"price": 9000,
+		"code": "17",
+		"stock": 20,
+		"thumbnail": "http"
+	},
+	{
+		"id": 6,
+		"title": "inventado",
+		"description": "inventado",
+		"code": "0054",
+		"price": 7899,
+		"status": true,
+		"stock": 80,
+		"category": "terrario"
+	},
+	{
+		"id": 7,
+		"title": "modificauuu",
+		"description": "inventado",
+		"code": "0054",
+		"price": 7899,
+		"status": true,
+		"stock": 80,
+		"category": "terrario"
+	}
+]

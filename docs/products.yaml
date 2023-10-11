@@ -1,0 +1,257 @@
+paths:
+  /api/products/:
+    get:
+      tags: 
+        - Products
+      summary: Obtiene todos los productos
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+    post:
+      tags: 
+        - Products
+      summary: Crea un nuevo producto
+      requestBody:
+        required: true 
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                title:
+                  type: string
+                  required: true
+                description:
+                  type: string
+                  required: true
+                price:
+                  type: string
+                code:
+                  type: string
+                status:
+                  type: string
+                category:
+                  type: number
+                  required: true
+                stock:
+                  type: number
+                  required: true
+                thumbnail:
+                  type: string
+              required:
+                - title
+                - description
+                - price
+                - code
+                - stock
+                - category
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'  
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+  /api/products/{productId}:
+    get:
+      tags: 
+        - Products
+      summary: Trae un producto por su ID
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+    put: 
+      tags: 
+        - Products
+      summary: Actualiza un producto
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                title:
+                  type: string
+                  required: true
+                description:
+                  type: string
+                  required: true
+                price:
+                  type: string
+                code:
+                  type: string
+                status:
+                  type: string
+                category:
+                  type: number
+                  required: true
+                stock:
+                  type: number
+                  required: true
+                thumbnail:
+                  type: string
+              required:
+                - title
+                - description
+                - price
+                - code
+                - stock
+                - category
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+    delete:
+      tags: 
+        - Products
+      summary: Elimina un producto
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+
+
+
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties: 
+        _id: 
+          type: ObjectId
+          description: Id autogenerado por MongoDB 
+        title: 
+          type: String
+          description: Nombre del producto
+        description: 
+          type: String
+          description: Descripción del producto
+        price: 
+          type: Number
+          description: Precio del producto
+        code: 
+          type: String
+          description: Código que identifica al producto
+        status: 
+          type: Boolean
+          description: Disponibilidad del producto
+        stock: 
+          type: Number
+          description: Unidades disponibles del producto 
+        category: 
+          type: String
+          description: Categoría a la que pertenece el producto 
+        owner: 
+          type: String
+          description: Email del usuario que creó el producto
+        thumbnails: 
+          type: [String]
+          description: Imágenes del producto
+      required: 
+        - title
+        - description
+        - price
+        - code
+        - stock
+        - category

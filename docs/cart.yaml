@@ -1,0 +1,284 @@
+paths:
+  /api/carts/{cartId}:
+    get:
+      tags: 
+        - Cart
+      summary: Obtiene el carrito del cliente
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: ID del carrito del cliente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        '404':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+    delete: 
+      tags:
+        - Cart
+      summary: Elimina todos los productos del carrito
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: ID del carrito del cliente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+  /api/carts:                  
+    post: 
+      tags:
+        - Cart
+      summary: Crea un carrito por cada cliente registrado
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+  /api/carts/{cartId}/product/{productId}:
+    post: 
+      tags: 
+        - Cart
+      summary: Agrega productos al carrito del cliente
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: ID del carrito del cliente
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+    put:
+      tags: 
+        - Cart
+      summary: Edita cantidades de productos dentro del carrito
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: ID del carrito del cliente
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                quantity:
+                  type: number
+                  required: true
+      responses: 
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+    delete: 
+      tags:
+        - Cart
+      summary: Elimina productos seleccionados del carrito
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: ID del carrito del cliente
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cart'
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+  /api/carts/{cartId}/purcharse:
+    post:
+      tags:
+        - Cart
+      summary: Genera ticket de compra
+      parameters:
+        - name: cartId
+          in: path
+          required: true
+          description: ID del carrito del cliente
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  code: 
+                    type: string
+                  purchase_datetime:
+                    type: data
+                  amount:
+                    type: string
+                  purcharser:
+                    type: string
+        '500':
+          description: Error en la operación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  status: 
+                    type: string
+                  error:
+                    type: string
+  
+
+
+
+
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id: 
+          type: ObjectId
+          description: Id autogenerado por MongoDB 
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              producto:
+                $ref: '#/components/schemas/Product'
+              cantidad:
+                type: number
+        # user:
+        #   type: object
+        #   properties:
+        #     email:
+        #       type: string
+        # purchase_datetime:
+        #   type: string
+        #   format: date-time
+        # code:
+        #   type: string
+      required:
+        - items
+        

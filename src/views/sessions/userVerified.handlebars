@@ -1,0 +1,19 @@
+<div class="row justify-content-center">
+    <h1 class="row justify-content-center" >¡¡¡Cuenta verificada!!!</h1>
+    <h3 class="row justify-content-center">Iniciar Session</h3>
+
+    <form class="w-25 " action="/api/session/login" method="post">
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Email</label>
+            <input type="email" name="email" value={{userVerified.email}} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">Nunca compartiremos tu correo electrónico con nadie</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1">
+        </div>
+
+        <button type="submit" class="btn btn-success">Iniciar sesión</button>
+    </form>
+</div>

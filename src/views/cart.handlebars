@@ -1,0 +1,34 @@
+<div>
+    <h1>Carrito de compras</h1>
+    <a  href="/cart/views/{{user.cart}}" id="cart"></a>
+
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Fotografías</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Eliminar producto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each cartProducts.products}}
+            {{!-- dentro de cartProducts, recorro products, y luego entro a cada prop instanciando
+            this.product.propiedad --}}
+            <tr>
+                <td>{{this.product.title}}</td>
+                <td>{{this.product.description}}</td>
+                <td>{{this.product.price}}</td>
+                <td>{{this.product.thumbnails}}</td>
+                <td>{{this.quantity}}</td>
+                <td><button class="btn btn-danger" onclick="eliminateProduct(`{{this.product._id}}`)">❌</button></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+<script src="/js/eliminateProduct.js" ></script>
+

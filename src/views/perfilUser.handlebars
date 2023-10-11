@@ -1,0 +1,55 @@
+<div class="container">
+
+    <div class="row justify-content-flex-start">
+        <div class="col-1">
+            {{!-- para usar if else, construir helpers en configuracion de handlebars --}}
+            {{#if (igual user.servicio "local") }}
+            <img src="/assets/{{user.file}}" alt="foto perfil" class="rounded-circle" width="72" height="72">
+            {{else if (igual user.servicio "Google" )}}
+            <img src={{user.file}} alt="foto perfil" class="rounded-circle" width="72" height="72">
+            {{else if (igual user.servicio "GitHub" )}}
+            <img src={{user.file}} alt="foto perfil" class="rounded-circle" width="72" height="72">
+            {{else}}
+            <img src="/assets/usuario.jpg" alt="foto perfil" class="rounded-circle" width="72" height="72">
+            {{/if}}
+        </div>
+
+        <div class="col-7 ">
+            <h4>Nombre y apellido: {{user.fullname}}</h4>
+            <h4>Email: {{user.email}}</h4>
+        </div>
+
+
+        {{#if (igual user.servicio "local" )}}
+        <form class="col-5" action="/api/session/current/cargaimage" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <h6>Cambiar foto de perfil</h6><input type="file" name="file">
+            </div>
+            <button type="submit" class="btn btn-success">Actualizar</button>
+        </form>
+
+
+          {{else if (igual user.servicio "Google" )}}
+        <form class="col-5" action="/api/session/current/cargaimage" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <h6>Cambiar foto de perfil</h6><input disabled="true" type="file" name="file">
+            </div>
+            <button type="submit" disabled="true" class="btn btn-success">Actualizar</button>
+        </form>
+
+
+          {{else if (igual user.servicio "GitHub" )}}
+        <form class="col-5" action="/api/session/current/cargaimage" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <h6>Cambiar foto de perfil</h6><input disabled="true" type="file" name="file">
+            </div>
+            <button type="submit" disabled="true" class="btn btn-success">Actualizar</button>
+        </form>
+        {{/if}}
+        
+    </div>
+    <div>
+        <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mt-1 mb-1 col-1"
+            href="/products/views">Volver</a>
+    </div>
+</div>
