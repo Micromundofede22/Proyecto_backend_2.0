@@ -9,9 +9,8 @@ import CartViewRouter from "./routers/cart.view.r.js";
 import ChatRouter from "./routers/chat.r.js";
 import MockRouter from "./routers/mock.r.js";
 import LoggerRouter from "./routers/logger.r.js";
-import MailRouter from "./routers/mail.r.js";
 import { messagesModel } from "./models/message.model.js";
-import errorMiddleware from "./middleware/error.middleware.js"
+import errorMiddleware from "./middleware/error.middleware.js";
 
 
 
@@ -32,9 +31,8 @@ const run = (io, app) => {
     const chatRouter = new ChatRouter();
     const mockRouter = new MockRouter();
     const loggerRouter = new LoggerRouter();
-    const mailRouter = new MailRouter();
 
-    app.get("/", (req, res) => { res.render("sessions/login") })
+    app.get("/", (req, res) => { res.render("sessions/login") });
 
     //ENDPOINT con routers
     app.use("/api/session", sessionRouter.getRouter());                            //getRouter() viene de la clase padre AppRouter, e inicializa el router                                         
@@ -46,10 +44,9 @@ const run = (io, app) => {
     app.use("/chat", passportCall("jwt"), handlePolicies(["USER", "PREMIUM"]), chatRouter.getRouter());
     app.use("/mockingproducts", mockRouter.getRouter());
     app.use("/loggerTest", loggerRouter.getRouter());
-    app.use("/mail", mailRouter.getRouter())
     // app.use("/cluster", clusterRouter)
 
-    app.use(errorMiddleware)  //custom errors siempre al final de todos los use y routers, ya que atrapa los custom errors
+    app.use(errorMiddleware);  //custom errors siempre al final de todos los use y routers, ya que atrapa los custom errors
 
 
 
@@ -61,31 +58,25 @@ const run = (io, app) => {
         // IO escucha el evento products emitido por el cliente socket
         socket.on('products', data => {
             //IO emite el evento updateProducts a todos los clientes socket
-            io.emit('updateProducts', data)
-        })
+            io.emit('updateProducts', data);
+        });
         socket.on('item', data => {
-            io.emit('updateCart', data)
-        })
+            io.emit('updateCart', data);
+        });
 
-
-
-        let messages = (await messagesModel.find()) ? await messagesModel.find() : []
-        socket.broadcast.emit('alerta') //es una 3era emisión que avisa a todos menos a quien se acaba de conectar. (las otras dos son socket.emit y io.emit) io es el servidor y socket el cliente
-        socket.emit('logs', messages) //solo emite a ese cliente el historial, (no a todos, sino se repetiria el historial)
+        //CHAT
+        let messages = (await messagesModel.find()) ? await messagesModel.find() : [];
+        socket.broadcast.emit('alerta'); //es una 3era emisión que avisa a todos menos a quien se acaba de conectar. (las otras dos son socket.emit y io.emit) io es el servidor y socket el cliente
+        socket.emit('logs', messages); //solo emite a ese cliente el historial, (no a todos, sino se repetiria el historial)
         socket.on('message', data => { //cuando cliente me haga llegar un mensaje, lo pusheo
             messages.push(data);
             messagesModel.create(messages);
-            io.emit('logs', messages) // y el servidor io emite a todos el historial completo
-        })
-    })
+            io.emit('logs', messages); // y el servidor io emite a todos el historial completo
+        });
+    });
+};
 
-
-
-
-
-}
-
-export default run
+export default run;
 
 
 

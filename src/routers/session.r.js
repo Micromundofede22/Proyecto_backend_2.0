@@ -13,6 +13,7 @@ import {
     googleCallback,
     getLogout,
     getCurrent,
+    roleChange,
     cargaImage,
     postOlvidar,
     verifyToken,
@@ -75,6 +76,11 @@ export default class SessionRouter extends AppRouter {
         uploader.single("file"), //uploader.single("file") es el middleware de MULTER para subir fotos. "file, porque en el formulario el name es file"
         passportCall("jwt"),
         cargaImage)
+
+        //CAMBIO DE ROL
+        this.post("/current/rolechange",
+        passportCall("jwt"),
+        roleChange)
 
         //Olvidar contraseña
         this.post("/olvidar-contra", postOlvidar)

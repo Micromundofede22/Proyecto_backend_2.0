@@ -6,12 +6,11 @@ import passport_jwt from "passport-jwt"
 import { createHash, isValidPassword, extractCookie, generateToken } from '../utils.js'
 import config from "./config.js"
 import { UserService, CartService } from "../services/services.js"
-import nodemailer from "nodemailer"
+import { sendEmailValidation } from "../services/nodemailer/nodemailer.js"
+
 
 //variables entorno
 const JWT_PRIVATE_KEY = config.keyPrivateJWT
-const nodemailerUSER = config.nodemailerUSER
-const nodemailerPASS = config.nodemailerPASS
 const ADMIN_EMAIL = config.ADMIN_EMAIL
 
 
@@ -50,31 +49,11 @@ const initializePassport = () => {
                 servicio: "local",
                 file: "usuario.jpg",
             }
-
             const result = await UserService.create(newUser)
 
-            //ENVÍO DE EMAIL AL REGISTRARSE
-            let configNodemailer = {
-                service: "gmail",
-                auth: {
-                    user: nodemailerUSER,
-                    pass: nodemailerPASS
-                }
-            }
-            let transporter = nodemailer.createTransport(configNodemailer)
-
-            let message = {
-                from: nodemailerUSER,
-                to: email,
-                subject: "🍀Validación de cuenta🍀",
-                html: `Bienvenido usuario ${email}. Haz click en el siguiente enlace para verificar tu cuenta:
-          <a href="http://localhost:8080/api/session/verify-user/${email}">Click Aquí</a>`
-            }
-            if (email == ADMIN_EMAIL) {
-                return done(null, result)
-            } else {
-
-                await transporter.sendMail(message)
+            if (email == ADMIN_EMAIL) return done(null, result)
+            else {
+                await sendEmailValidation(email)
                 return done(null, result)
             }
         } catch (err) {

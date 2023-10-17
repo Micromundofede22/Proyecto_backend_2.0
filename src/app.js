@@ -17,18 +17,18 @@ import run from "./run.js";
 
 
 //variables de entorno
-const PORT = config.PORT
-const MONGO_URI= config.MONGO_URI
-const MONGO_DB_NAME= config.MONGO_DB_NAME
-const JWT_PRIVATE_KEY = config.keyPrivateJWT
+const PORT = config.PORT;
+const MONGO_URI= config.MONGO_URI;
+const MONGO_DB_NAME= config.MONGO_DB_NAME;
+const JWT_PRIVATE_KEY = config.keyPrivateJWT;
 
-const app = express()
+const app = express();
 
-app.use(express.json())                         //server pueda recibir json del cliente
-app.use(express.urlencoded({ extended: true })) //server pueda recibir json que llegan por formulario por vista desde el cliente
-app.use(cookieParser())                         //crea cookies (se usan para que se guarde el token)
-app.use(express.static(__dirname + "/public"))  //Archivos públicos se guarden en carpeta public
-app.use(cors())                                 // permite conexiones de front que estan en otros dominios a mi servidor 
+app.use(express.json());                         //server pueda recibir json del cliente
+app.use(express.urlencoded({ extended: true })); //server pueda recibir json que llegan por formulario por vista desde el cliente
+app.use(cookieParser());                         //crea cookies (se usan para que se guarde el token)
+app.use(express.static(__dirname + "/public"));  //Archivos públicos se guarden en carpeta public
+app.use(cors());                                 // permite conexiones de front que estan en otros dominios a mi servidor 
 
 
 //CONFIGURACIÓN DEL MOTOR DE PLANTILLAS
@@ -40,9 +40,9 @@ app.engine('handlebars', handlebars.engine({
             }
         }
     }
-}))
-app.set('views', __dirname + "/views")
-app.set('view engine', 'handlebars')
+}));
+app.set('views', __dirname + "/views");
+app.set('view engine', 'handlebars');
 
 
 // CONFIG PASSPORT
@@ -50,10 +50,10 @@ app.use(session({
     secret: JWT_PRIVATE_KEY ,
     resave: true,
     saveUninitialized: true
-}))
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
+}));
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //CONFIGURACIÓN DOCUMENTACIÓN API SWAGGER
 export const swaggerOptions = {
@@ -74,12 +74,12 @@ app.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 try {
     // CONEXIÓN A LA BASE DE DATOS 
-    await mongoose.connect(`${MONGO_URI}${MONGO_DB_NAME}`)
+    await mongoose.connect(`${MONGO_URI}${MONGO_DB_NAME}`);
 
     //INICIO DEL SERVIDOR HTTP
     const serverHTTP = app.listen(
         PORT,
-        () => logger.info(`Server up ${PORT}`))
+        () => logger.info(`Server up ${PORT}`));
 
     //CONFIGURACION SOCKET IO
     // instanciO servidor socketio y enlazO al server http
