@@ -1,22 +1,23 @@
-import passport from "passport" //traigo libreria
-import local from 'passport-local' //traigo estrategia de la libreria
-import GitHubStrategy from "passport-github2"
-import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth"
-import passport_jwt from "passport-jwt"
-import { createHash, isValidPassword, extractCookie, generateToken } from '../utils.js'
-import config from "./config.js"
-import { UserService, CartService } from "../services/services.js"
-import { sendEmailValidation } from "../services/nodemailer/nodemailer.js"
+import passport from "passport"; //traigo libreria
+import local from 'passport-local'; //traigo estrategia de la libreria
+import GitHubStrategy from "passport-github2";
+import { OAuth2Strategy as GoogleStrategy } from "passport-google-oauth";
+import passport_jwt from "passport-jwt";
+import { createHash, isValidPassword, extractCookie, generateToken } from '../utils.js';
+import config from "./config.js";
+import { UserService, CartService } from "../services/services.js";
+import { sendEmailValidation } from "../services/nodemailer/nodemailer.js";
+import moment from "moment/moment.js";
 
 
 //variables entorno
-const JWT_PRIVATE_KEY = config.keyPrivateJWT
-const ADMIN_EMAIL = config.ADMIN_EMAIL
+const JWT_PRIVATE_KEY = config.keyPrivateJWT;
+const ADMIN_EMAIL = config.ADMIN_EMAIL;
 
 
-const LocalStrategy = local.Strategy        //estrategia local
-const JWTStrategy = passport_jwt.Strategy   //estrategia jwt
-const ExtractJWT = passport_jwt.ExtractJwt  //extrae token de cookie
+const LocalStrategy = local.Strategy;        //estrategia local
+const JWTStrategy = passport_jwt.Strategy;   //estrategia jwt
+const ExtractJWT = passport_jwt.ExtractJwt;  //extrae token de cookie
 
 
 const initializePassport = () => {
@@ -26,63 +27,61 @@ const initializePassport = () => {
         passReqToCallback: true,
         usernameField: 'email'
     }, async (req, username, password, done) => {
-        const { first_name, last_name, email, age, role } = req.body
+        const { first_name, last_name, email, age, role } = req.body;
 
         try {
             // BUSCA USUARIO YA REGISTRADO 
-            const user = await UserService.getUserEmail({ email: username })
+            const user = await UserService.getUserEmail({ email: username });
             if (user) {
                 console.log('Usuario ya existe')
                 return done(null, false)
-            }
+            };
             // SI NO EXISTE USUARIO, SE REGISTRA UNO NUEVO
-            const cartForNewUser = await CartService.createCart({}) //creamos un CARRITO
+            const cartForNewUser = await CartService.createCart({}); //creamos un CARRITO
             const newUser = {
                 first_name,
                 last_name,
                 email,
                 age,
                 role,
-                status: (email == ADMIN_EMAIL) ? "VERIFIED" : "UNVERIFIED",
+                verifiedAccount: (email == ADMIN_EMAIL) ? "VERIFIED" : "UNVERIFIED",
                 password: createHash(password),
                 cart: cartForNewUser._id, //al nuevo usuario le asignamos el carrito que armamos mas arriba
                 servicio: "local",
                 file: "usuario.jpg",
-            }
-            const result = await UserService.create(newUser)
+            };
+            const result = await UserService.create(newUser);
 
-            if (email == ADMIN_EMAIL) return done(null, result)
+            if (email == ADMIN_EMAIL) return done(null, result);
             else {
                 await sendEmailValidation(email)
                 return done(null, result)
-            }
+            };
         } catch (err) {
 
-        }
-    }))
+        };
+    }));
 
     // CONFIG LOGIN
     passport.use('loginPass', new LocalStrategy({
         usernameField: 'email'
     }, async (username, password, done) => {
         try {
-            const user = await UserService.getUserEmail({ email: username })
-            if (!user) {
-                return done(null, false)
-            }
-            if (!isValidPassword(user, password)) return done(null, false)
-            if (user.status == "UNVERIFIED") {
+            const user = await UserService.getUserEmail({ email: username });
+            if (!user) return done(null, false);
+            if (!isValidPassword(user, password)) return done(null, false);
+            if (user.verifiedAccount == "UNVERIFIED") {
                 console.log("Verifique la cuenta, haciendo click en el link que se envió a su email")
-                return done(null, false)
-            }
-
-            const token = generateToken(user) //generatetoken importado de utils, donde mete los datos del user en un token
-            user.token = token //a user le agrego este atributo token, asi el user que me devuelve passport ya esta dentro de un token
-            return done(null, user)
+                return done(null, false);
+            };
+            await UserService.updateUser(user._id, {last_connection: `Login: ${moment().format("DD/MM/YYYY HH:mm:ss")} `})
+            const token = generateToken(user); //generatetoken importado de utils, donde mete los datos del user en un token
+            user.token = token; //a user le agrego este atributo token, asi el user que me devuelve passport ya esta dentro de un token
+            return done(null, user);
         } catch (err) {
 
-        }
-    }))
+        };
+    }));
 
     passport.use("github", new GitHubStrategy({
         clientID: "Iv1.d5fe56e994ba152a",
@@ -91,13 +90,13 @@ const initializePassport = () => {
     }, async (accessToken, refreshToken, profile, done) => {
         // console.log(profile)
         try {
-            const user = await UserService.getUserEmail({ email: profile._json.email })
+            const user = await UserService.getUserEmail({ email: profile._json.email });
             if (user) {
-                const token = generateToken(user)
-                user.token = token
-                return done(null, user)
+                const token = generateToken(user);
+                user.token = token;
+                return done(null, user);
             } else {
-                const cartForNewUser = await CartService.createCart({})
+                const cartForNewUser = await CartService.createCart({});
 
                 const newUser = await UserService.create({
                     first_name: profile._json.name,
@@ -108,15 +107,15 @@ const initializePassport = () => {
                     servicio: "GitHub",
                     file: profile._json.avatar_url,
                     cart: cartForNewUser._id
-                })
-                const token = generateToken(newUser)
-                newUser.token = token
-                return done(null, newUser)
+                });
+                const token = generateToken(newUser);
+                newUser.token = token;
+                return done(null, newUser);
             }
         } catch (err) {
-            return done(`Error to login with GitHub => ${err.message}`)
-        }
-    }))
+            return done(`Error to login with GitHub => ${err.message}`);
+        };
+    }));
 
 
     passport.use("googlePass", new GoogleStrategy({
@@ -127,15 +126,15 @@ const initializePassport = () => {
         async (accessToken, refreshToken, profile, done) => {
             try {
                 // busca usuarios ya registrados
-                const user = await UserService.getUserEmail({ email: profile._json.email })
+                const user = await UserService.getUserEmail({ email: profile._json.email });
                 // console.log(profile) //profile tiene todos los datos del user de google
                 if (user) {
-                    const token = generateToken(user)
-                    user.token = token
-                    if (user) return done(null, user)
+                    const token = generateToken(user);
+                    user.token = token;
+                    if (user) return done(null, user);
                     // registra nuevos usuarios
                 } else {
-                    const cartForNewUser = await CartService.createCart({})
+                    const cartForNewUser = await CartService.createCart({});
                     const newUser = await UserService.create({
                         first_name: profile._json.name,
                         last_name: profile._json.family_name,
@@ -145,39 +144,37 @@ const initializePassport = () => {
                         servicio: "Google",
                         file: profile._json.picture,
                         cart: cartForNewUser._id
-                    })
+                    });
 
-                    const token = generateToken(newUser)
-                    newUser.token = token
-                    return done(null, newUser)
+                    const token = generateToken(newUser);
+                    newUser.token = token;
+                    return done(null, newUser);
                 }
             } catch (err) {
-                return done(`Error to login with Google => ${err.message}`)
+                return done(`Error to login with Google => ${err.message}`);
             }
-        }
-    )
-    );
+        }));
 
     //JWT ESTRATEGY
     // esta estrategia se usa en un middleware asi: ruta, middleware("jwt"), router
     passport.use('jwt', new JWTStrategy({
-        jwtFromRequest: ExtractJWT.fromExtractors([extractCookie]), //extractCookie importado de utils
-        secretOrKey: JWT_PRIVATE_KEY                               //constante de clave secreta importada de config .env
+        jwtFromRequest: ExtractJWT.fromExtractors([extractCookie]),  //extractCookie importado de utils
+        secretOrKey: JWT_PRIVATE_KEY                                 //constante de clave secreta importada de config .env
     }, async (jwt_payload, done) => {
-        done(null, jwt_payload)                                     //devuelve contenido del jwt
-    }))
+        done(null, jwt_payload);                                     //devuelve contenido del jwt
+    }));
 
 
 
 
     passport.serializeUser((user, done) => {
-        done(null, user._id)
-    })
+        done(null, user._id);
+    });
 
     passport.deserializeUser(async (id, done) => {
-        const user = await UserService.getUserById(id)
-        done(null, user)
-    })
-}
+        const user = await UserService.getUserById(id);
+        done(null, user);
+    });
+};
 
-export default initializePassport
+export default initializePassport;

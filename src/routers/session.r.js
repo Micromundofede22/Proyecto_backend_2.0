@@ -13,7 +13,6 @@ import {
     googleCallback,
     getLogout,
     getCurrent,
-    roleChange,
     cargaImage,
     postOlvidar,
     verifyToken,
@@ -26,29 +25,29 @@ export default class SessionRouter extends AppRouter {
     init() {
         // API login
         this.post('/login',
-            passport.authenticate('loginPass', { failureRedirect: '/api/session/failLogin',  }),
-            postLogin)
+            passport.authenticate('loginPass', { failureRedirect: '/api/session/failLogin', }),
+            postLogin);
 
-        this.get('/failLogin', getFailLogin)
+        this.get('/failLogin', getFailLogin);
 
         // API register en DB
         this.post('/register',
             passport.authenticate('registerPass', { failureRedirect: '/api/session/failRegister' }),
-            postRegister)
+            postRegister);
 
         //VERIFICAR CUENTA
-        this.get("/verify-user/:user", getVerifyUser)
-        this.get('/failRegister', getFailRegister)
+        this.get("/verify-user/:user", getVerifyUser);
+        this.get('/failRegister', getFailRegister);
 
         //GIT
         this.get("/github",
             passport.authenticate("github", { scope: ["user:email"] }),
-            getGitHub)
+            getGitHub);
 
         this.get('/githubcallback',
             passport.authenticate('github', { failureRedirect: '/api/session/failLogin' }),
             gitHubCallback
-        )
+        );
 
         //GOOGLE
         this.get("/google",
@@ -59,28 +58,28 @@ export default class SessionRouter extends AppRouter {
                 ],
                 session: false
             }),
-            getGoogle)
+            getGoogle);
 
         this.get("/googlecallback",
             passport.authenticate("googlePass", { failureRedirect: '/api/session/failLogin' }),
-            googleCallback)
+            googleCallback);
 
         //CERRAR SESIÓN
-        this.get('/logout', getLogout)
+        this.get('/logout',
+            passportCall("jwt"),
+            getLogout);
 
         //DATA CLIENTE
-        this.get("/current", getCurrent)
+        this.get("/current",
+            passportCall("jwt"),
+            getCurrent);
 
         //Subir foto perfil
         this.post("/current/cargaimage",
-        uploader.single("file"), //uploader.single("file") es el middleware de MULTER para subir fotos. "file, porque en el formulario el name es file"
-        passportCall("jwt"),
-        cargaImage)
+            uploader.single("file"), //uploader.single("file") es el middleware de MULTER para subir fotos. "file, porque en el formulario el name es file"
+            passportCall("jwt"),
+            cargaImage);
 
-        //CAMBIO DE ROL
-        this.post("/current/rolechange",
-        passportCall("jwt"),
-        roleChange)
 
         //Olvidar contraseña
         this.post("/olvidar-contra", postOlvidar)
@@ -89,6 +88,6 @@ export default class SessionRouter extends AppRouter {
         this.get("/verify-token/:token", verifyToken)
 
         //Reestablecer contraseña
-        this.post("/restablecer-contra/:user", restablecerContra )
+        this.post("/restablecer-contra/:user", restablecerContra)
     }
 }

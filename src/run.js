@@ -11,6 +11,7 @@ import MockRouter from "./routers/mock.r.js";
 import LoggerRouter from "./routers/logger.r.js";
 import { messagesModel } from "./models/message.model.js";
 import errorMiddleware from "./middleware/error.middleware.js";
+import UserRouter from "./routers/users.r.js";
 
 
 
@@ -25,6 +26,7 @@ const run = (io, app) => {
     const sessionRouter = new SessionRouter();
     const productRouterClass = new ProductRouter();
     const cartRouter = new CartRouter();
+    const userRouter = new UserRouter();
     const sessionViewsRouter = new SessionViewsRouter();
     const productViewRouter = new ProductViewRouter();
     const cartViewRouter = new CartViewRouter();
@@ -38,6 +40,7 @@ const run = (io, app) => {
     app.use("/api/session", sessionRouter.getRouter());                            //getRouter() viene de la clase padre AppRouter, e inicializa el router                                         
     app.use('/api/products', passportCall("jwt"), productRouterClass.getRouter());
     app.use('/api/carts', passportCall("jwt"), cartRouter.getRouter());
+    app.use('/api/users', passportCall("jwt"), userRouter.getRouter() )
     app.use("/session", sessionViewsRouter.getRouter());
     app.use("/products", passportCall("jwt"), productViewRouter.getRouter());
     app.use("/cart", passportCall("jwt"), cartViewRouter.getRouter());

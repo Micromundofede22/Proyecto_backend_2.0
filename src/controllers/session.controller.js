@@ -5,43 +5,44 @@ import { UserPasswordService, UserService } from "../services/services.js";
 import { createHash, generateRandomString, isValidPassword } from "../utils.js";
 import { sendEmailRestPassword } from "../services/nodemailer/nodemailer.js";
 import logger from "../loggers.js";
+import moment from "moment/moment.js";
 
 
 //variable de entorno en carpeta config, archivo config
-const JWT_COOKIE_NAME = config.cookieNameJWT
-const JWT_PRIVATE_KEY = config.keyPrivateJWT
+const JWT_COOKIE_NAME = config.cookieNameJWT;
+const JWT_PRIVATE_KEY = config.keyPrivateJWT;
 
 export const postLogin = async (req, res) => {
     res
         .cookie(JWT_COOKIE_NAME, req.user.token, signedCookie(JWT_PRIVATE_KEY))//en la cookie guardo el token. signedcockie es la cookie firmada
         .redirect('/products/views');
-}
+};
 
 export const getFailLogin = (req, res) => {
     res.unauthorized(`Error al loguearse. Si se registró y aún no verificó su cuenta de email, 
     revise su correo y confirme con el link que se le envió. Caso contrario vuelva a loguearse`);
-}
+};
 
 export const postRegister = async (req, res) => {
     res.redirect('/session/login'); //si registra con middleware passport de routes, redirije al login
-}
+};
 
 export const getVerifyUser = async (req, res) => {
     try {
         const user = await UserService.getUserEmail({ email: req.params.user });
         if (!user) return res.unauthorized("El usuario no esta registrado en nuestra base de datos. Debe registrarse primero");
 
-        const userVerified = await UserService.updateUser(user._id, { status: "VERIFIED" });
+        const userVerified = await UserService.updateUser(user._id, { verifiedAccount: "VERIFIED" });
         return res.render("sessions/userVerified", { userVerified });
 
     } catch (error) {
         res.sendServerError(error.message);
     }
-}
+};
 
 export const getFailRegister = (req, res) => {
     res.sendError('Failed register!');
-}
+};
 
 export const getGitHub = async (req, res) => { }
 
@@ -50,7 +51,7 @@ export const gitHubCallback = async (req, res) => {
     res
         .cookie(JWT_COOKIE_NAME, req.user.token, signedCookie(JWT_PRIVATE_KEY))
         .redirect('/products/views');
-}
+};
 
 export const getGoogle = async (req, res) => { }
 
@@ -59,22 +60,26 @@ export const googleCallback = async (req, res) => {
     res
         .cookie(JWT_COOKIE_NAME, req.user.token, signedCookie(JWT_PRIVATE_KEY)) //a la cookie le meto el token
         .redirect('/products/views');
-}
+};
 
-export const getLogout = (req, res) => {
+export const getLogout = async (req, res) => {
+    const userId= req.user.user._id;
+    await UserService.updateUser(userId, {last_connection: `Logout: ${moment().format("DD/MM/YYYY HH:mm:ss")} `});
+
     req.session.destroy(err => { });   //destruye la session que usa passport en su configuracion
     res
         .clearCookie(JWT_COOKIE_NAME)   //elimino cookie que tiene el token
         .redirect("/");
-}
+};
+
 
 export const getCurrent = (req, res) => {
     //dto envia info seleccionada
-    const user = new UserDTO(req.user);
-    // console.log(user)
-    if (!req.user) return res.unauthorized("Sesión no detectada, inicia sesión");
+    const user = new UserDTO(req.user.user);
+    // console.log(user);
+    if (!req.user.user) return res.unauthorized("Sesión no detectada, inicia sesión");
     res.render("perfilUser", { user });
-}
+};
 
 export const cargaImage = async (req, res) => {
     try {
@@ -88,22 +93,8 @@ export const cargaImage = async (req, res) => {
     } catch (error) {
         res.sendServerError(error.message);
     }
-}
+};
 
-export const roleChange = async (req, res) => {
-    try {
-        const newRole = req.body.role;
-        const id = req.user.user._id;
-        const result = await UserService.updateUser(id, { role: newRole });
-        // console.log(result)
-        if (result === null) return res.sendRequestError("Not found");
-        // res.sendSuccess(`Nuevo rol asignado ${newRole}`)
-        res.redirect("/api/session/current/");
-    } catch (error) {
-        logger.error(error);
-        res.sendServerError(error.message);
-    }
-}
 
 //RESTABLECER CONTRASEÑAS
 export const postOlvidar = async (req, res) => {
@@ -121,7 +112,7 @@ export const postOlvidar = async (req, res) => {
         logger.error(error.message);
         res.sendServerError(error.message);
     }
-}
+};
 
 export const verifyToken = async (req, res) => {
     try {
@@ -135,7 +126,7 @@ export const verifyToken = async (req, res) => {
     } catch (error) {
         res.sendServerError(error.message);
     }
-}
+};
 
 export const restablecerContra = async (req, res) => {
     const newPassword = req.body.newPassword;
@@ -153,4 +144,4 @@ export const restablecerContra = async (req, res) => {
         logger.error(error);
         res.sendServerError(error.message);
     }
-}
+};

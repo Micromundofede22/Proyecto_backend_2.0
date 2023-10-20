@@ -2,10 +2,11 @@
 //se usa en la ruta current de session
 export default class UserDTO{
     constructor(user){
-        this.fullname= `${user.first_name || " "} ${user.last_name || " "}`
-        this.email= user.email
-        this.servicio= user.servicio
-        this.file= user.file
-        this.role= user.role
-    }
-}
+        // this.fullname= `${user.first_name} ${user.last_name}` //problemas con handlebars 
+        // this._id = user._id;
+        this.email= user.email;
+        this.servicio= user.servicio;
+        this.file= user.file;
+        this.role= user.role;
+    };
+};

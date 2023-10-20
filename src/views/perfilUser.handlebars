@@ -15,10 +15,20 @@
         </div>
 
         <div class="col-7 ">
-            <h4>Nombre y apellido: {{user.fullname}}</h4>
+            {{!-- <h4>Nombre y apellido: {{user.fullname}}</h4> --}}
             <h4>Email: {{user.email}}</h4>
             <h4>Rol:{{user.role}}</h4>
         </div>
+
+        <div>
+            <button><a href="/api/users/rolechange">Actualizar</a></button>
+        </div>
+
+
+
+
+
+
 
 
         {{#if (igual user.servicio "local" )}}
@@ -49,24 +59,7 @@
         {{/if}}
     </div>
 
-    <div>
-        <h3>Cambiar de Rol</h3>
-        <form class="w-25 " action="/api/session/current/rolechange" method="post">
-            <fieldset>
-                <legend>Selecciona tu nuevo rol</legend>
-                <div>
-                    <input type="radio" id="user" name="role" value="user" checked />
-                    <label for="user">Usuario</label>
-                </div>
-
-                <div>
-                    <input type="radio" id="premium" name="role" value="premium" />
-                    <label for="premium">Usuario Premium</label>
-                </div>
-            </fieldset>
-            <button type="submit" class="btn btn-success">Cambiar Rol</button>
-        </form>
-    </div>
+    
 
     <div>
         <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mt-1 mb-1 col-1"

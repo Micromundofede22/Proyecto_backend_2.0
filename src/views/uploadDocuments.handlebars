@@ -1,0 +1,16 @@
+<div>
+    <form class="col-5" action="/api/users/:uid/documents" method="post" enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <h6>Identificación</h6><input type="file" name="identificacion">
+        </div>
+        <div class="mb-3">
+            <h6>Comprobante de domicilio</h6><input type="file" name="domicilio">
+        </div>
+        <div class="mb-3">
+            <h6>Comprobante estado de cuenta</h6><input type="file" name="comprobanteCuenta">
+        </div>
+
+        <button type="submit" class="btn btn-success">Subir</button>
+    </form>
+</div>
