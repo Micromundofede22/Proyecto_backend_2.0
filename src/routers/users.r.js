@@ -32,5 +32,5 @@ export default class UserRouter extends AppRouter {
             passportCall("jwt"),
             uploader.fields([{ name: "identificacion" }, { name: "domicilio" }, { name: "comprobante" }]),
             documentController);
-    }
-} 
+    };
+}; 
