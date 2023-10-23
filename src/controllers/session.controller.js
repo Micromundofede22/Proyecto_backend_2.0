@@ -76,6 +76,7 @@ export const getLogout = async (req, res) => {
 export const getCurrent = (req, res) => {
     //dto envia info seleccionada
     const user = new UserDTO(req.user.user);
+    // console.log(Object.getPrototypeOf(user)=== UserDTO.prototype) //para probar prototipos
     // console.log(user);
     if (!req.user.user) return res.unauthorized("Sesión no detectada, inicia sesión");
     res.render("perfilUser", { user });

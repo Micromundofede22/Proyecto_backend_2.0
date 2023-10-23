@@ -1,5 +1,6 @@
 import AppRouter from "./appRouter.js";
 import { handlePolicies } from "../middleware/auth.middleware.js";
+import { uploader } from "../middleware/multer.js";
 import {
     getAllProductsController,
     getProductByIdController,
@@ -15,7 +16,7 @@ export default class ProductRouter extends AppRouter {
 
         this.get("/:pid", getProductByIdController);
 
-        this.post('/', handlePolicies(["ADMIN", "PREMIUM"]), createProductController);
+        this.post('/', handlePolicies(["ADMIN", "PREMIUM"]), uploader.single("thumbnails"), createProductController);
 
         this.put("/:pid", handlePolicies(["ADMIN", "PREMIUM"]), updateProductController);
 

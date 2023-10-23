@@ -56,10 +56,11 @@ export const getProductByIdController = async (req, res) => {
 export const createProductController = async (req, res, next) => { //next, para que error pase al middleware del error
     try {
         const data = req.body;
-        if (req.user.user.role == "premium") { //si usuario premium crea el producto, se gusrda su email en el campo owner
-            data.owner = req.user.user.email;
-            // console.log(data.owner)
-        }
+        //si usuario premium crea el producto, se guarda su email en el campo owner
+        if (req.user.user.role == "premium") data.owner = req.user.user.email;
+        //si hay file, se guara en thumbnails
+        if (req.file) data.thumbnails = req.file.filename; 
+
         // GESTION DE ERRORES MEDIANTE EL MIDDLEWARE DE ERRORES
         if (!data.title ||
             !data.description ||

@@ -45,9 +45,10 @@ export const createInCartController = async (req, res) => {
         const pid = req.params.pid;
         const user = req.user.user;
         const cart = await CartService.getById(cid);
-        // console.log(user.cart, (cart._id).toString());
-        if ((cart._id).toString() !== user.cart) return res.sendRequestError("El id del Usuario no coincide con nuestra base de datos");
+        const product= await ProductService.getById(pid.toString()); 
 
+        if ((cart._id).toString() !== user.cart) return res.sendRequestError("El id del Usuario no coincide con nuestra base de datos");
+        if(user.email == product.owner) return res.sendRequestError("Usted no puede comprar productos de su autoría");
         let acum = 0;
         cart.products.map((datos) => {
             if (datos.product == pid) {

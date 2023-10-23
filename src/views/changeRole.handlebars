@@ -2,11 +2,11 @@
         <h2>Cambiar de Rol</h2>
         <h3>Para cambiar de rol, primero debes subir documentación haciendo click en el siguiente botón</h3>
         
-        <button><a href="/api/users/:uid/documents">Actualizar</a></button>
+        <button><a href="/api/users/{{user._id}}/documents">Actualizar</a></button>
 
 
 
-        <form class="w-25 " action="/api/users/premium/:uid" method="post">
+        <form class="w-25 " action="/api/users/premium/{{user._id}}" method="post">
             <fieldset>
                 <legend>Selecciona tu nuevo rol</legend>
                 <div>

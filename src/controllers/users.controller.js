@@ -5,8 +5,8 @@ import { UserService } from "../services/services.js";
 export const viewChangeController = (req, res) => {
     try {
         const user = req.user.user;
-        // console.log(user)
-        res.render("changeRole");
+        // console.log(typeof user)
+        res.render("changeRole", {user});
 
     } catch (error) {
         res.sendServerError(error.message);
@@ -22,14 +22,25 @@ export const changeRolController = async (req, res) => {
 
         const user = await UserService.getUserById(id);
         const documentsUpload = user.documents.filter((item) => item.name.includes("identificacion") || item.name.includes("domicilio") || item.name.includes("comprobante"));
-        console.log(documentsUpload);
+        // console.log(documentsUpload);
         if (documentsUpload.length === 3) {
             await UserService.updateUser(id, { role: newRole });
             // console.log(userModificado)
             // res.redirect("/products/views");
             return res.sendSuccess("Rol cambiado exitosamente")
         } else {
-            return res.sendRequestError("Faltan cargar documentos para ser premium");
+            let missingDocuments = [];
+            if (!documentsUpload.some(item => item.name.includes("identificacion"))) {
+                missingDocuments.push("Identificación");
+            };
+            if (!documentsUpload.some(item => item.name.includes("domicilio"))) {
+                missingDocuments.push("Domicilio");
+            };
+            if (!documentsUpload.some(item => item.name.includes("comprobante"))) {
+                missingDocuments.push("Comprobante");
+            };
+            return res
+                .sendRequestError(`Faltan cargar los siguiente documentos para ser premium: ${missingDocuments}`);
         }
     } catch (error) {
         logger.error(error);
@@ -39,9 +50,9 @@ export const changeRolController = async (req, res) => {
 
 export const viewDocumentsController = async (req, res) => {
     try {
-        // const user= req.user.user
+        const user= req.user.user._id;
         // console.log(user)
-        res.render("uploadDocuments");
+        res.render("uploadDocuments", {user});
     } catch (error) {
         res.sendServerError(error.message);
     }
@@ -51,10 +62,12 @@ export const viewDocumentsController = async (req, res) => {
 export const documentController = async (req, res) => {
     try {
         const id = req.params.uid
+        console.log(id)
         const documentsUpload = req.files; //objeto, y cada archivo que tiene es un array
         const user = await UserService.getUserById(id)
+        console.log(user)
         // console.log(typeof documentsUpload)
-        
+
         const documents = user.documents;
         //DOCUMENTOS DE IDENTIFICACION
         if (documentsUpload.identificacion && !documents.some(item => item.name.includes("identificacion"))) {
