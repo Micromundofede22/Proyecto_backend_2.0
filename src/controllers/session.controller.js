@@ -1,11 +1,12 @@
 import { signedCookie } from "cookie-parser";
+import { generateToken } from "../utils.js";
 import config from "../config/config.js";
 import UserDTO from "../dto/Users.DTO.js";
 import { UserPasswordService, UserService } from "../services/services.js";
 import { createHash, generateRandomString, isValidPassword } from "../utils.js";
 import { sendEmailRestPassword } from "../services/nodemailer/nodemailer.js";
 import logger from "../loggers.js";
-import moment from "moment/moment.js";
+import dayjs from "dayjs";
 
 
 //variable de entorno en carpeta config, archivo config
@@ -63,8 +64,8 @@ export const googleCallback = async (req, res) => {
 };
 
 export const getLogout = async (req, res) => {
-    const userId= req.user.user._id;
-    await UserService.updateUser(userId, {last_connection: `Logout: ${moment().format("DD/MM/YYYY HH:mm:ss")} `});
+    const userId = req.user.user._id;
+    await UserService.updateUser(userId, { last_connection: dayjs() });
 
     req.session.destroy(err => { });   //destruye la session que usa passport en su configuracion
     res
@@ -88,9 +89,16 @@ export const cargaImage = async (req, res) => {
         const data = req.file;
         // console.log(data.filename)
         const result = await UserService.updateUser(id, { file: data.filename });
-        // console.log(result)
         if (result === null) res.sendRequestError("Not found");
-        res.redirect("/api/session/current/");
+        const user = result;
+
+        req.user.user.file = data.filename;
+        const userCurrent = req.user.user;
+        const token = generateToken(userCurrent);
+
+        res
+            .cookie(JWT_COOKIE_NAME, token, signedCookie(JWT_PRIVATE_KEY))
+            .render("perfilUser", { user });
     } catch (error) {
         res.sendServerError(error.message);
     }

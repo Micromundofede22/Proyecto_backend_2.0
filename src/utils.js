@@ -39,18 +39,18 @@ export const generateToken = user => {
 //genera un string random, como lo hace la libreria jwt, pero manual, me sirve como token
 export const generateRandomString= (num)=>{
     return [...Array(num)].map(()=>{
-        const randomNum= ~~(Math.random()* 36)
+        const randomNum= ~~(Math.random()* 36);
         return randomNum.toString(36)
     })
     .join("")
-    .toUpperCase()
-}
+    .toUpperCase();
+};
 
 
 // extraer token de cookie (se usa en la estrategy de JWT en passport config)
 export const extractCookie = req => {
-    return (req && req.cookies) ? req.cookies[JWT_COOKIE_NAME] : null
-}
+    return (req && req.cookies) ? req.cookies[JWT_COOKIE_NAME] : null;
+};
 
 //FAKER, MOCK DATOS FALSOS PARA PRUEBAS 
 export const generateUser= () =>{
@@ -64,7 +64,5 @@ export const generateUser= () =>{
         stock: faker.number.int({ max: 50 }),
         category: faker.commerce.productAdjective(),
         thumbnails: [faker.image.avatarLegacy()]
-    }
-
-    
-}
+    };
+};

@@ -4,13 +4,13 @@
         <div class="col-1">
             {{!-- para usar if else, construir helpers en configuracion de handlebars --}}
             {{#if (igual user.servicio "local") }}
-            <img src="/assets/{{user.file}}" alt="foto perfil" class="rounded-circle" width="72" height="72">
+            <img src="/profiles/{{user.file}}" alt="foto perfil" class="rounded-circle" width="72" height="72">
             {{else if (igual user.servicio "Google" )}}
             <img src={{user.file}} alt="foto perfil" class="rounded-circle" width="72" height="72">
             {{else if (igual user.servicio "GitHub" )}}
             <img src={{user.file}} alt="foto perfil" class="rounded-circle" width="72" height="72">
             {{else}}
-            <img src="/assets/usuario.jpg" alt="foto perfil" class="rounded-circle" width="72" height="72">
+            <img src="/profiles/usuario.jpg" alt="foto perfil" class="rounded-circle" width="72" height="72">
             {{/if}}
 
         </div>

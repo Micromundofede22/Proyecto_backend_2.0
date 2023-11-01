@@ -1,24 +1,60 @@
 <div>
-        <h2>Cambiar de Rol</h2>
-        <h3>Para cambiar de rol, primero debes subir documentación haciendo click en el siguiente botón</h3>
-        
-        <button><a href="/api/users/{{user._id}}/documents">Actualizar</a></button>
+    <h2>Cambiar de Rol</h2>
+    <h3>Carga de documentación PREMIUM</h3>
+
+    <button><a href="/api/users/{{user._id}}/documents">Cargar doc</a></button>
 
 
 
-        <form class="w-25 " action="/api/users/premium/{{user._id}}" method="post">
-            <fieldset>
-                <legend>Selecciona tu nuevo rol</legend>
-                <div>
-                    <input type="radio" id="user" name="role" value="user" checked />
-                    <label for="user">Usuario</label>
-                </div>
+    <form class="w-25 " action="/api/users/premium/{{user._id}}" method="post">
+        <fieldset>
+            <legend>Selecciona tu nuevo rol</legend>
+            <div>
+                <input type="radio" id="user" name="role" value="user" checked />
+                <label for="user">Usuario</label>
+            </div>
 
-                <div>
-                    <input type="radio" id="premium" name="role" value="premium" />
-                    <label for="premium">Usuario Premium</label>
-                </div>
-            </fieldset>
-            <button type="submit" class="btn btn-success">Cambiar Rol</button>
-        </form>
+            <div>
+                <input type="radio" id="premium" name="role" value="premium" />
+                <label for="premium">Usuario Premium</label>
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-success">Cambiar Rol</button>
+    </form>
+</div>
+
+
+<div>
+    {{#if (igual user.servicio "local" )}}
+    <form class="col-5" action="/api/session/current/cargaimage" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <h6>Cambiar foto de perfil</h6><input type="file" name="imageprofile">
+        </div>
+        <button type="submit" class="btn btn-success">Actualizar foto</button>
+    </form>
+
+
+    {{else if (igual user.servicio "Google" )}}
+    <form class="col-5" action="/api/session/current/cargaimage" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <h6>Cambiar foto de perfil</h6><input disabled="true" type="file" name="imageprofile">
+        </div>
+        <button type="submit" disabled="true" class="btn btn-success">Actualizar foto</button>
+    </form>
+
+
+    {{else if (igual user.servicio "GitHub" )}}
+    <form class="col-5" action="/api/session/current/cargaimage" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <h6>Cambiar foto de perfil</h6><input disabled="true" type="file" name="imageprofile">
+        </div>
+        <button type="submit" disabled="true" class="btn btn-success">Actualizar foto</button>
+    </form>
+    {{/if}}
+
+    <div>
+        <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mt-1 mb-1 col-1"
+            href="/products/views">Volver</a>
     </div>
+    
+</div>

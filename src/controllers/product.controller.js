@@ -1,4 +1,5 @@
 import { ProductService } from "../services/services.js";
+import {sendEmailDeleteProduct} from "../services/nodemailer/nodemailer.js"
 // testing errores
 import CustomError from "../services/errors/custom_error.js"; //clase que crea errores
 import EErrors from "../services/errors/enums_error.js"; //diccionario errores
@@ -59,7 +60,7 @@ export const createProductController = async (req, res, next) => { //next, para 
         //si usuario premium crea el producto, se guarda su email en el campo owner
         if (req.user.user.role == "premium") data.owner = req.user.user.email;
         //si hay file, se guara en thumbnails
-        if (req.file) data.thumbnails = req.file.filename; 
+        if (req.file) data.thumbnails = req.file.filename;
 
         // GESTION DE ERRORES MEDIANTE EL MIDDLEWARE DE ERRORES
         if (!data.title ||
@@ -149,14 +150,14 @@ export const deleteProductController = async (req, res) => {
         }
         //ADMINISTRADOR
         const id = req.params.pid;
-        const result = await ProductService.delete(id);
-        if (result == null) {
-            return res.sendRequestError(`El producto con id ${id} no se encontró`);
-        } else {
-            res.sendSuccess(result);
-            logger.info("success");
-            req.app.get("socketio").emit("updateProducts", await ProductService.getAll());
-        }
+        const product = await ProductService.delete(id);
+        const email= product.owner;
+        if (product == null) return res.sendRequestError(`El producto con id ${id} no se encontró`);
+        if (product.owner != "admin") sendEmailDeleteProduct(product, email);
+        res.sendSuccess(product);
+        logger.info("success");
+        req.app.get("socketio").emit("updateProducts", await ProductService.getAll());
+
     } catch (error) {
         res.sendServerError(error.message);
     }

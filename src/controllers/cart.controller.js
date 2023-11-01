@@ -45,10 +45,10 @@ export const createInCartController = async (req, res) => {
         const pid = req.params.pid;
         const user = req.user.user;
         const cart = await CartService.getById(cid);
-        const product= await ProductService.getById(pid.toString()); 
+        const product = await ProductService.getById(pid.toString());
 
         if ((cart._id).toString() !== user.cart) return res.sendRequestError("El id del Usuario no coincide con nuestra base de datos");
-        if(user.email == product.owner) return res.sendRequestError("Usted no puede comprar productos de su autoría");
+        if (user.email == product.owner) return res.sendRequestError("Usted no puede comprar productos de su autoría");
         let acum = 0;
         cart.products.map((datos) => {
             if (datos.product == pid) {
@@ -90,8 +90,9 @@ export const deleteOneProductController = async (req, res) => {
         }
 
         const result = await CartService.getByIdPopulate(cid);
+        console.log(result)
+        req.app.get("socketio").emit("updateCart", result);
         res.sendSuccess(result);
-        req.app.get("socketio").emit("updateCart", await CartService.getByIdPopulate(cid));
     } catch (error) {
         res.sendServerError(error.message);
     };
@@ -150,7 +151,7 @@ export const purchaseController = async (req, res) => {
 
         const promises = cart.products.map(async (data) => {
             let listProduct = await ProductService.getById((data.product._id).toString())    //traigo el product de la coleccion producto, ya q en cart solo hay referencias. toString()permite que se transforme a string porque esta en formato objeto
-            // console.log(listProduct)
+
             //modifico stock de product en coleccion productos
             if (data.quantity <= listProduct.stock) {                                        //data es de cart y listproduct de coleccion productos
                 const quantity = listProduct.stock - data.quantity;
@@ -160,17 +161,23 @@ export const purchaseController = async (req, res) => {
                 //calculo monto de cada producto
                 const mount = (listProduct.price * data.quantity);
                 montoTotal.push(mount);
+
                 //ingreso los products comprados a este array antes de eliminarlos del cart
                 productsComprados.push({ product: listProduct._id, quantity: data.quantity });
-
+                
                 //eliminar products comprados del carrito
-                const index = cart.products.findIndex(item => item.product.toString() === listProduct._id.toString()); //busca indice del product a eliminar
-                if (index >= 0) { //mayor a 0, por si findIndex no encuentra el producto, tira -1 y me rompe el codigo
-                    cart.products.splice((index), 1);
+                const index = await cart.products.findIndex((item) => item.product.toString() === listProduct._id.toString()); //busca indice del product a eliminar
+                // const index= cart.products.indexOf((listProduct._id).toString());
+                console.log(index);
+
+                if (index >= 0) {
+                    //mayor a 0, por si findIndex no encuentra el producto, tira -1 y me rompe el codigo
+                    await cart.products.splice(index, 1);
+                    
                     await CartService.updateCart({ _id: (cart._id).toString() }, cart); //solo quedan los productos que no tienen stock
-                }
-            }
-        })
+                };
+            };
+        });
 
         //cuando todas las promesas anteriores se cumplan...
         Promise.all(promises)
@@ -192,20 +199,23 @@ export const purchaseController = async (req, res) => {
 
 
                 //CREACIÓN TICKET
-                const newTicket = await TicketService.create({
-                    code: code.toString(),
-                    amount: sumaMount,
-                    purcharser: email,
-                    products: productsComprados
-                });
-                //busco el ticket en la base de datos
-                const ticket = await TicketService.getByData({ code: newTicket.code });
-                // console.log(ticket)
-                // res.status(200).json({ status: "success", sinStock: cart.products }) //responder con el carrito con los productos sin stock
-                await sendEmailTiketPurchase(ticket);
-                res.sendSuccess("Compra exitosa");
-                logger.info("success");
-                req.app.get("socketio").emit("updateCart", await CartService.getByIdPopulate(cid));
+                if (sumaMount > 0) {
+                    const newTicket = await TicketService.create({
+                        code: code.toString(),
+                        amount: sumaMount,
+                        purcharser: email,
+                        products: productsComprados
+                    });
+                    //busco el ticket en la base de datos
+                    const ticket = await TicketService.getByData({ code: newTicket.code });
+                    //envio mail con ticket
+                    await sendEmailTiketPurchase(ticket);
+                    logger.info("Purchase success");
+                    req.app.get("socketio").emit("updateCart", await CartService.getByIdPopulate(cid));
+                    res.sendSuccess({sinStock: cart.products});
+                } else {
+                    res.sendRequestError("El monto debe superar los $0");
+                }
 
             }).catch((error) => {
                 logger.error(error.message);
@@ -215,5 +225,5 @@ export const purchaseController = async (req, res) => {
     } catch (error) {
         res.sendServerError(error.message);
         logger.error(error.message);
-    }
+    };
 };

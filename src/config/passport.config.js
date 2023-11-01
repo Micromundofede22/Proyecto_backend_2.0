@@ -7,7 +7,7 @@ import { createHash, isValidPassword, extractCookie, generateToken } from '../ut
 import config from "./config.js";
 import { UserService, CartService } from "../services/services.js";
 import { sendEmailValidation } from "../services/nodemailer/nodemailer.js";
-import moment from "moment/moment.js";
+import dayjs from "dayjs";
 
 
 //variables entorno
@@ -74,7 +74,7 @@ const initializePassport = () => {
                 console.log("Verifique la cuenta, haciendo click en el link que se envió a su email")
                 return done(null, false);
             };
-            await UserService.updateUser(user._id, {last_connection: `Login: ${moment().format("DD/MM/YYYY HH:mm:ss")} `})
+            await UserService.updateUser(user._id, {last_connection: dayjs()} );
             const token = generateToken(user); //generatetoken importado de utils, donde mete los datos del user en un token
             user.token = token; //a user le agrego este atributo token, asi el user que me devuelve passport ya esta dentro de un token
             return done(null, user);

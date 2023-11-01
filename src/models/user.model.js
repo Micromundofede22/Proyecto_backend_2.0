@@ -1,4 +1,3 @@
-import moment from "moment/moment.js";
 import mongoose from "mongoose";
 
 const userCollection = "users"
@@ -14,7 +13,7 @@ const userSchema = new mongoose.Schema({
     servicio: { type: String, required: false },
     file: { type: String, required: false },
     verifiedAccount: { type: String, default: "UNVERIFIED" },
-    last_connection: { type: String, default: moment().format("DD/MM/YYYY HH:mm:ss"),required: true },
+    last_connection: { type: Date, default: Date.now, required: true },
     documents: {
         type: [{
             name: String,

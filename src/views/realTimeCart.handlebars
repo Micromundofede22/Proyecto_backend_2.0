@@ -2,35 +2,44 @@
 <hr />
 
 <div>
- <h1>Carrito de compras</h1>
- {{!-- enlace solo para pasar el id del cart a la funcion eliminate  --}}
-    <a  href="/cart/views/{{user.cart}}" id="cart"></a>
+    <h1>Carrito de compras</h1>
+    {{!-- enlace solo para pasar el id del cart a la funcion eliminate --}}
+    <a href="/cart/views/{{user.cart}}" id="cart"></a>
 </div>
-<table class="table table-dark" >
-        <thead>
-            <tr>
-                <th scope="col">Producto</th>
-                <th scope="col">Precio</th>
-                <th scope="col">Fotografías</th>
-                <th scope="col">Cantidad</th>
-                <th scope="col">Eliminar</th>
-            </tr>
-        </thead>
-        <tbody id="tabla">
-            
-            {{#each cartProducts.products}}
-            <tr>
-                {{!-- product.propiedad ya que cada producto es un objeto guardado en la propiedad product(asi esta en modelo)  --}}
-                <td id="td1">{{this.product.title}}</td>
-                <td id="td2">{{this.product.price}}</td>
-                <td id="td3">{{this.product.thumbnails}}</td>
-                 {{!-- <td id="td4">{{this.quantity}}</td> --}}
-                <td id="td4"><button id="btn" class="btn btn-danger" onclick="eliminateProduct(`{{this.product._id}}`)">❌</button></td>
-            </tr>
-            {{/each}}
-            
-        </tbody>
-    </table>
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">Producto</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Fotografías</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Eliminar</th>
+        </tr>
+    </thead>
+    <tbody id="tabla">
+
+        {{#each products}}
+        <tr>
+            {{!-- product.propiedad ya que cada producto es un objeto guardado en la propiedad product(asi esta en
+            modelo) --}}
+            <td id="td1">{{this.product.title}}</td>
+            <td id="td2">{{this.product.price}}</td>
+            <td id="td3">{{this.product.thumbnails}}</td>
+            <td id="td4">{{this.quantity}}</td>
+            <td id="td5"><button id="btn" class="btn btn-danger"
+                    onclick="eliminateProduct(`{{this.product._id}}`)">❌</button></td>
+        </tr>
+        {{/each}}
+
+    </tbody>
+</table>
+<div>
+    <form action="/api/carts/{{user.cart}}/purchase" method="post" target="_blank">
+
+        <button type="submit">Comprar</button>
+    </form>
+
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/realTimeCart.js"></script>

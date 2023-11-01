@@ -1,0 +1,36 @@
+<div>
+    <div>
+        <h1>Datos del usuario</h1>
+        <h4>Nombre: {{user.first_name}}</h4>
+        <h4>Apellido: {{user.last_name}}</h4>
+        <h4>Email: {{user.email}}</h4>
+        <h4>Edad: {{user.age}}</h4>
+        <h4>Rol: {{user.role}}</h4>
+        {{!-- <h4>Documentos: {{user.last_name}}</h4> --}}
+    </div>
+
+    <div>
+        <form class="w-25 " action="/api/users/usermodifies/{{user._id}}" method="post">
+            <fieldset>
+                <legend>Cambiar rol del usuario</legend>
+                <div>
+                    <input type="radio" id="user" name="role" value="user" checked />
+                    <label for="user">Usuario</label>
+                </div>
+
+                <div>
+                    <input type="radio" id="premium" name="role" value="premium" />
+                    <label for="premium">Usuario Premium</label>
+                </div>
+            </fieldset>
+            <button type="submit" class="btn btn-success">Cambiar Rol</button>
+        </form>
+    </div>
+
+    <div>
+         <form class="w-25 " action="/api/users/useroff/{{user._id}}" method="post">
+         <h4>Eliminar usuario</h4>
+         <button type="submit" class="btn btn-danger">Eliminar</button>
+         </form>
+    </div>
+</div>

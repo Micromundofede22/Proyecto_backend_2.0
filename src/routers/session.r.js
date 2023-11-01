@@ -76,7 +76,7 @@ export default class SessionRouter extends AppRouter {
 
         //Subir foto perfil
         this.post("/current/cargaimage",
-            uploader.single("file"), //uploader.single("file") es el middleware de MULTER para subir fotos. "file, porque en el formulario el name es file"
+            uploader.single("imageprofile"), // middleware de MULTER para subir fotos.imageprofile es el campo name en formulario
             passportCall("jwt"),
             cargaImage);
 
