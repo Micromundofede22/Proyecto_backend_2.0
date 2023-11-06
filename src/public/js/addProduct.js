@@ -1,7 +1,7 @@
 
 const cartLink = document?.getElementById("cart"); //me traigo el elemento a
 const hrefValue = cartLink?.getAttribute("href"); //getAtribute devuelve el value de un atributo específico, en este caso del href, donde esta contenido el id del carrito
-const cart = hrefValue?.match(/\/cart\/cartrealtime\/(.+)/)[1] //match busca coincidencias y devuelve un array con la coincidencia. \/esto borra lo que no me interesa que busque
+const cart = hrefValue?.match(/\/cart\/views\/(.+)/)[1] //match busca coincidencias y devuelve un array con la coincidencia. \/esto borra lo que no me interesa que busque
 
 
 

@@ -19,7 +19,7 @@
     <tbody id="tabla">
 
         {{#each products}}
-        <tr>
+        <tr >
             {{!-- product.propiedad ya que cada producto es un objeto guardado en la propiedad product(asi esta en
             modelo) --}}
             <td id="td1">{{this.product.title}}</td>
@@ -33,6 +33,8 @@
 
     </tbody>
 </table>
+
+
 <div>
     <form action="/api/carts/{{user.cart}}/purchase" method="post" target="_blank">
 

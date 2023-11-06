@@ -1,17 +1,18 @@
+
 import { CartService } from "../services/services.js"
 
 
 // VISTA CARRITO CON PRODUCTOS
-export const cartViewController= async (req, res) => {
+export async function cartViewController (req, res) {
     try {
         const cid = req.params.cid;
         const cartSinPop = await CartService.getById(cid); //muestra carrito con su id y products
         
         const cart= await cartSinPop.populate("products.product");//aplico populate acá
        if (cart){
-        const cartProducts= { products: cart.products.map(prod => prod.toObject())} //hago un nuevo objeto por cada producto, y le aplico la propiedad products. toObject me permite enviar el json a formato objeto para visualizarlos
+        const cartProducts= { products: cart.products.map(prod => prod.toObject())}; //hago un nuevo objeto por cada producto, y le aplico la propiedad products. toObject me permite enviar el json a formato objeto para visualizarlos
         const user = req.user.user; 
-        res.render("cart", { cartProducts,user, lean: true });
+        res.render("cart", { cartProducts,user, lean: true});
     }else{
         res.status(401).render("errors/base", {error:"No existe carrito"});
     };
@@ -20,7 +21,9 @@ export const cartViewController= async (req, res) => {
     };
 };
 
+
 export const cartRealTimeController = async (req, res) => {
+    //NO RENDERIZA BIEN
     const cid = req.params.cid;
     const cartSinPop= await CartService.getById(cid);
 
@@ -36,4 +39,4 @@ export const cartRealTimeController = async (req, res) => {
     }else{
         res.status(401).render("errors/base", {error:"No existe carrito"});
     }
-}
+};

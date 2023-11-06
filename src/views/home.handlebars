@@ -17,63 +17,60 @@
         <div class="col-10 ">
             <h3>Bienvenido: {{user.first_name}}</h3>
             <h4>Rol: {{user.role}}</h4>
-             {{!-- <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mb-1" href="/cart/views/{{user.cart}}" id="cart">Cart</a> --}}
-             <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mb-1" href="/cart/cartrealtime/{{user.cart}}" id="cart">CartReal</a>
-             <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mb-1" href="/api/session/current">User</a>
+            <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mb-1"
+                href="/cart/views/{{user.cart}}" id="cart">Cart</a>
+            {{!-- <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mb-1"
+                href="/cart/cartrealtime/{{user.cart}}" id="cart">CartReal</a> --}}
+            <a class="navbar-brand btn btn-success text-white rounded-pill fw-bold mb-1"
+                href="/api/session/current">User</a>
 
-            <a class="text-decoration-none text-reset" href="/api/session/logout"><strong>Cerrar sesión</strong> </a>
-           
+            <a class="text-decoration-none text-reset"
+             href="/api/session/logout"><strong>Cerrar sesión</strong> </a>
         </div>
-
     </div>
-</div>
 
-<div>
 
-    <table class="table table-dark">
-        <thead>
-            <tr>
-                <th scope="col">Título</th>
-                <th scope="col">Descripción</th>
-                <th scope="col">Precio</th>
-                <th scope="col">Disponibilidad</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Categoría</th>
-                <th scope="col">Fotografías</th>
-                <th scope="col">Comprar</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{!-- .docs porque paginate guarda los objetos en una propiedad docs --}}
-            {{#each products.docs}} 
-            <tr>
-                <td>{{this.title}}</td>
-                <td>{{this.description}}</td>
-                <td>{{this.price}}</td>
-                <td>{{this.status}}</td>
-                <td>{{this.stock}}</td>
-                <td>{{this.category}}</td>
-                <td>{{this.thumbnails}}</td>
-                <td><button class="btn btn-success" onclick="addLink(`{{this._id}}`)">Add</button></td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+    <div class="row justify-content-between">
+
+        {{#each products.docs}}
+        <div class="card mb-3" style="width: 18rem;">
+
+            <img src="/products/{{this.thumbnails}}" class="card-img-top" alt="imagen producto">
+            <div class="card-body">
+                <h3 class="card-title">{{this.title}}</h3>
+                <h5>Categoría: {{this.category}}</h5>
+                <p>Precio: $<strong>{{this.price}}</strong></p>
+                <p>Stock disponible: <strong>{{this.stock}}</strong></p>
+                <p class="card-text">{{this.description}}</p>
+                {{#if (igual this.stock 0 )}}
+                <button class="btn btn-success" disabled="true" onclick="addLink(`{{this._id}}`)">Agregar al carrito</button>
+                {{else}}
+                <button class="btn btn-success" onclick="addLink(`{{this._id}}`)">Agregar al carrito</button>
+                {{/if}}
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
 
     <div>
         <nav aria-label="Page navigation example row ">
             <ul class="pagination justify-content-center">
                 {{#if products.hasPrevPage}}
-                <li class="page-item"><a class="page-link bg-success text-white" href="{{products.prevLink}}">Previous</a></li>
+                <li class="page-item"><a class="page-link bg-success text-white"
+                        href="{{products.prevLink}}">Previous</a></li>
                 {{/if}}
                 {{#if products.hasNextPage}}
-                <li class="page-item"><a class="page-link bg-success text-white" href="{{products.nextLink}}">Next</a></li>
+                <li class="page-item"><a class="page-link bg-success text-white" 
+                        href="{{products.nextLink}}">Next</a>
+                </li>
                 {{/if}}
             </ul>
         </nav>
     </div>
-
 </div>
+
+
 
 
 

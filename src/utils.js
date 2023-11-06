@@ -4,7 +4,7 @@ import config from "./config/config.js";
 import { fakerES as faker} from '@faker-js/faker'; //testing
 //DIRNAME
 import {fileURLToPath} from 'url'; // método que decodifica una url en una cadena de ruta
-import { dirname, join } from 'path';    // dirnmame devuelve la ruta absoluta donde se encuentra el archivo actual. Join une varios fragmentos en una unica ruta
+import { dirname} from 'path';    // dirnmame devuelve la ruta absoluta donde se encuentra el archivo actual. Join une varios fragmentos en una unica ruta
 
 
 //variables de entorno

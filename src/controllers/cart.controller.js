@@ -6,6 +6,7 @@ import {
 } from "../services/services.js";
 import logger from "../loggers.js";
 import { sendEmailTiketPurchase } from "../services/nodemailer/nodemailer.js";
+import dayjs from "dayjs";
 
 // Crear carrito
 export const createCartController = async (req, res) => {
@@ -164,16 +165,16 @@ export const purchaseController = async (req, res) => {
 
                 //ingreso los products comprados a este array antes de eliminarlos del cart
                 productsComprados.push({ product: listProduct._id, quantity: data.quantity });
-                
+
                 //eliminar products comprados del carrito
-                const index = await cart.products.findIndex((item) => item.product.toString() === listProduct._id.toString()); //busca indice del product a eliminar
+                const index = await cart.products.findIndex((item) => item.product._id.toString() === listProduct._id.toString()); //busca indice del product a eliminar
                 // const index= cart.products.indexOf((listProduct._id).toString());
-                console.log(index);
+
 
                 if (index >= 0) {
                     //mayor a 0, por si findIndex no encuentra el producto, tira -1 y me rompe el codigo
                     await cart.products.splice(index, 1);
-                    
+
                     await CartService.updateCart({ _id: (cart._id).toString() }, cart); //solo quedan los productos que no tienen stock
                 };
             };
@@ -187,7 +188,7 @@ export const purchaseController = async (req, res) => {
                 const sumaMount = montoTotal.reduce((acc, elem) => acc + elem, 0);
 
                 //EXTRAER EMAIL
-                const users = await UserService.getUser(); //traigo usuarios
+                const users = await UserService.getUser(); 
                 const user = users.filter((data) => data.cart == (cart._id).toString()); //filtro el usuario que tiene el carrito en cuestion
                 const email = user[0].email; //entro al array que tiene mi user en la posicion 0, y luego a su propiedad email
 
@@ -198,6 +199,7 @@ export const purchaseController = async (req, res) => {
                     : 1;
 
 
+                    
                 //CREACIÓN TICKET
                 if (sumaMount > 0) {
                     const newTicket = await TicketService.create({
@@ -208,11 +210,15 @@ export const purchaseController = async (req, res) => {
                     });
                     //busco el ticket en la base de datos
                     const ticket = await TicketService.getByData({ code: newTicket.code });
+                    const dateTime= dayjs(ticket.purchase_datetime).format("DD/MM/YYYY HH:mm"); 
+                    // console.log(ticket, typeof ticket);
                     //envio mail con ticket
                     await sendEmailTiketPurchase(ticket);
                     logger.info("Purchase success");
                     req.app.get("socketio").emit("updateCart", await CartService.getByIdPopulate(cid));
-                    res.sendSuccess({sinStock: cart.products});
+                    res.render("payment/ticket", {ticket, dateTime})
+                    // res.sendSuccess(ticket);
+
                 } else {
                     res.sendRequestError("El monto debe superar los $0");
                 }
@@ -227,3 +233,7 @@ export const purchaseController = async (req, res) => {
         logger.error(error.message);
     };
 };
+
+
+
+  

@@ -138,7 +138,7 @@ export const deleteProductController = async (req, res) => {
             // console.log(product)
             if (product == null) {
                 return res.sendRequestError(`El producto con id ${id} no se encontró`);
-            }
+            };
             if (product.owner === req.user.user.email) {
                 const result = await ProductService.delete(id);
                 logger.info("success");
@@ -146,8 +146,8 @@ export const deleteProductController = async (req, res) => {
             } else {
                 logger.info("error, no autorizado");
                 return res.unauthorized("El producto no es de su autoría"); //respuesta proviene class AppRouter
-            }
-        }
+            };
+        };
         //ADMINISTRADOR
         const id = req.params.pid;
         const product = await ProductService.delete(id);
@@ -160,5 +160,5 @@ export const deleteProductController = async (req, res) => {
 
     } catch (error) {
         res.sendServerError(error.message);
-    }
-}
+    };
+};

@@ -1,15 +1,15 @@
-import dotenv from "dotenv"  //lee variables de entorno del archivo .env
-import { Command } from "commander" //comander para cambiar persistencia por linea de comandos
+import dotenv from "dotenv";  //lee variables de entorno del archivo .env
+import { Command } from "commander"; //comander para cambiar persistencia por linea de comandos
 
 
-dotenv.config()
+dotenv.config();
 
-const program= new Command()
+const program= new Command();
 
-program.option("-p <persistence>", "persistencia de los datos", "MONGO")
+program.option("-p <persistence>", "persistencia de los datos", "MONGO");
 
-program.parse() //convierte json  a objeto js
-const persistenceComander= program.opts().p
+program.parse(); //convierte json  a objeto js
+const persistenceComander= program.opts().p;
 // console.log(persistenceComander)
 
 export default{
@@ -23,5 +23,6 @@ export default{
     cookieNameJWT: process.env.JWT_COOKIE_NAME,       //cookie jwt
     keyPrivateJWT: process.env.JWT_PRIVATE_KEY,       //clave privada cookie
     nodemailerUSER: process.env.NODEMAILER_USER,
-    nodemailerPASS: process.env.NODEMAILER_PASS
-}
+    nodemailerPASS: process.env.NODEMAILER_PASS,
+    KEY_STRIPE: process.env.KEY_STRIPE               //clave privada api de pagos stripe
+};

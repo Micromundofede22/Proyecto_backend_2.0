@@ -2,12 +2,13 @@ import nodemailer from "nodemailer";
 import config from "../../config/config.js";
 import Mailgen from "mailgen";
 import dayjs from "dayjs";
+import logger from "../../loggers.js"
 
 const nodemailerUSER = config.nodemailerUSER;
 const nodemailerPASS = config.nodemailerPASS;
 
 
-export const sendEmailValidation = async (email) => {
+export const sendEmailValidation = async (email, first_name) => {
     //ENVÍO DE EMAIL AL REGISTRARSE
     let configNodemailer = {
         service: "gmail",
@@ -18,15 +19,47 @@ export const sendEmailValidation = async (email) => {
     };
     let transporter = nodemailer.createTransport(configNodemailer);
 
+    let MailGenerator = new Mailgen({
+        theme: "cerberus",
+        product: { //encabezado
+            name: "Micromundo terrarios",
+            link: "http://micromundo.terrarios.com", //link clikeable a pagina web
+            // logo: "",
+            // logoHeight: "30px"
+        }
+    });
+    let content = {//cuerpo del mensaje
+        body: { 
+            name: first_name,
+            intro: `Bienvenido a Micromundo. Es un placer que seas parte de nuestra comunidad micromundista. Haz click en el siguiente botón para verificar tu cuenta.`,
+            action: {
+                button:{
+                    color: '#22BC66',
+                    text: 'Confirme su cuenta',
+                    link: `http://localhost:8080/api/session/verify-user/${email}`
+                }
+            },
+            dictionary: {
+                Fecha: dayjs().format("DD/MM/YYYY HH:mm"),
+            },
+            signature: false
+        }
+    };
+    let mail = MailGenerator.generate(content);
+
     let message = {
         from: nodemailerUSER,
         to: email,
         subject: "🍀Validación de cuenta🍀",
-        html: `Bienvenido usuario ${email}. Haz click en el siguiente enlace para verificar tu cuenta:
-  <a href="http://localhost:8080/api/session/verify-user/${email}">Click Aquí</a>`
-    }
-    await transporter.sendMail(message);
+        html: mail
+    };
+    try {
+        await transporter.sendMail(message);
+    } catch (error) {
+        logger.error(error);
+    };
 };
+
 
 
 export const sendEmailRestPassword = async (email, token) => {
@@ -47,7 +80,11 @@ export const sendEmailRestPassword = async (email, token) => {
         html: `<h1>Restablece tu contraseña</h1><hr /> Haz click en el siguiente enlace:
           <a href="http://localhost:8080/api/session/verify-token/${token}">Click Aquí</a>`
     };
-    await transporter.sendMail(message);
+    try {
+        await transporter.sendMail(message);
+    } catch (error) {
+        logger.error(error);
+    };
 };
 
 
@@ -129,11 +166,15 @@ export const sendEmailUserOffline = async (email, date) => {
         to: email,
         subject: "Cuenta offline",
         html: `<h1>Tu cuenta ha sido dada de baja</h1><hr/>
-        Debido a que presenta inactividad en su cuenta desde el día ${date}, hemos dado d baja su cuenta
+        Debido a que presenta inactividad en su cuenta desde el día ${date}, hemos dado de baja su cuenta.
         Para volver a registrarse, haga click en el siguiente enlace:  
           <a href="http://localhost:8080/session/register">Click Aquí</a>`
     };
-    await transporter.sendMail(message);
+    try {
+        await transporter.sendMail(message);
+    } catch (error) {
+        logger.error(error);
+    };
 };
 
 
@@ -154,5 +195,9 @@ export const sendEmailDeleteProduct = async (product, email) => {
         html: `<h1>Tu producto ha sido eliminado</h1><hr/>
         <p>El administrador de la página eliminó del catálogo tu producto ${product.title}</p> `
     };
-    await transporter.sendMail(message);
+    try {
+        await transporter.sendMail(message);
+    } catch (error) {
+        logger.error(error);
+    };
 };

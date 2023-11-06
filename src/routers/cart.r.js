@@ -7,7 +7,7 @@ import {
     deleteOneProductController,
     deleteCartController,
     updateQuantityController,
-    purchaseController
+    purchaseController,
 } from "../controllers/cart.controller.js";
 
 export default class CartRouter extends AppRouter{
@@ -24,6 +24,6 @@ export default class CartRouter extends AppRouter{
 
         this.delete("/:cid",deleteCartController);
         
-        this.post("/:cid/purchase",handlePolicies(["USER", "PREMIUM"]), purchaseController); 
-    }
-}
+        this.get("/:cid/purchase",handlePolicies(["USER", "PREMIUM"]), purchaseController); 
+    };
+};

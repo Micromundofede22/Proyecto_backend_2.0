@@ -4,21 +4,22 @@ const cartLink = document?.getElementById("cart"); //me traigo el id cart del en
 const hrefValue = cartLink?.getAttribute("href"); //getAtribute devuelve el value de un atributo específico, en este caso del href
 const cart = hrefValue?.match(/\/cart\/views\/(.+)/)[1] //match busca coincidencias y devuelve un array con la coincidencia. \/esto borra lo que no me interesa que busque
 
-const tableBody = document.getElementById("tabla");
+let tableBody = document.getElementById("tabla");
 
 
-socket.on("updateCart", (data) => { //socket escucha el updateCart del server y responde con esto
+socket.on("updateCart",(data) => { //socket escucha el updateCart del server y responde con esto
     const dataenArray = [data]
     // console.log("paso1")
     const arrayIterable = dataenArray[0].products
-    
+
     console.log(arrayIterable)
 
+    
     tableBody.innerHTML = ` `
-    for (let item of arrayIterable) {
-
-        console.log("paso 2")
-        const documentFragment = document.createDocumentFragment() //para que un elemento reciba varios appendchild
+    
+    for await ( let item of arrayIterable) {
+        
+        const trFragment = document.createDocumentFragment() //para que un elemento reciba varios appendchild
         // const tdFragmentada = document.createDocumentFragment()
 
         let tr = document.createElement("tr")
@@ -26,26 +27,22 @@ socket.on("updateCart", (data) => { //socket escucha el updateCart del server y 
         let td2 = document.createElement("td")
         let td3 = document.createElement("td")
         let td4 = document.createElement("td")
-        let td5= document.getElementById("td5")
+        // let td5= document.getElementById("td5")
         // let btn = document.createElement("button")
 
         td1.innerHTML = `${item.product.title}`
         td2.innerHTML = `${item.product.price}`
         td3.innerHTML = `${item.product.thumbnails}`
         td4.innerHTML= `${item.quantity}`
-        // btn.innerHTML= `hola `
-        // console.log(item.product.title,item.product.price,item.product.thumbnails, item.quantity)
-    
+        // td5.innerHTML= `<button id="btn" class="btn btn-danger"
+        // onclick="eliminateProduct(${item.product._id})">❌</button>`
 
-        documentFragment.appendChild(tr) //mi fila tr es la fragmentada
-        tr.appendChild(td1, td2, td3, td4,td5)
-        // tdFragmentada.appendChild(td4)
-        // td4.appendChild(btn)
-        
-        console.log(td1,td2,td3, td4)
-
-        tableBody.appendChild(documentFragment) //luego a la tabla le añado el documento fragmentado (que es la fila tr)
+        trFragment.appendChild(tr) //mi fila tr es la fragmentada
+        tr.appendChild(td1, td2, td3, td4)
+      
+        tableBody.appendChild(trFragment) //luego a la tabla le añado el documento fragmentado (que es la fila tr)
     }
+
 });
 
 
@@ -67,4 +64,3 @@ const eliminateProduct = async (_id) => {
         console.log(error);
     }
 }
-

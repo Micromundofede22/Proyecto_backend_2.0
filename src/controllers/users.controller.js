@@ -197,7 +197,7 @@ export const viewModifiesController = (req, res) => {
     } catch (error) {
         res.sendServerError(error.message);
     }
-}
+};
 
 //busca usuario y lo muestra en vista
 export const findUserController = async (req, res) => {
@@ -208,7 +208,7 @@ export const findUserController = async (req, res) => {
     } catch (error) {
         res.sendServerError(error.message);
     }
-}
+};
 
 //cambia rol al usuario
 export const userModifiesController = async (req, res) => {

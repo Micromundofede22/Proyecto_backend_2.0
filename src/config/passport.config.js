@@ -54,8 +54,8 @@ const initializePassport = () => {
 
             if (email == ADMIN_EMAIL) return done(null, result);
             else {
-                await sendEmailValidation(email)
-                return done(null, result)
+                await sendEmailValidation(email,first_name.toUpperCase() );
+                return done(null, result);
             };
         } catch (err) {
 
@@ -163,8 +163,6 @@ const initializePassport = () => {
     }, async (jwt_payload, done) => {
         done(null, jwt_payload);                                     //devuelve contenido del jwt
     }));
-
-
 
 
     passport.serializeUser((user, done) => {

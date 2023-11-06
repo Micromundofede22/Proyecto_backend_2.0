@@ -1,6 +1,6 @@
 <div>
     <h1>Carrito de compras</h1>
-    <a  href="/cart/views/{{user.cart}}" id="cart"></a>
+    <a href="/cart/views/{{user.cart}}" id="cart"></a>
 
     <table class="table table-dark">
         <thead>
@@ -10,7 +10,6 @@
                 <th scope="col">Precio</th>
                 <th scope="col">Fotografías</th>
                 <th scope="col">Cantidad</th>
-                <th scope="col">Eliminar producto</th>
             </tr>
         </thead>
         <tbody>
@@ -21,14 +20,47 @@
                 <td>{{this.product.title}}</td>
                 <td>{{this.product.description}}</td>
                 <td>{{this.product.price}}</td>
-                <td>{{this.product.thumbnails}}</td>
+                <td><img src="/products/{{this.product.thumbnails}}" alt="img" style="width: 7rem;"
+                        class="rounded-pill"></td>
                 <td>{{this.quantity}}</td>
-                <td><button class="btn btn-danger" onclick="eliminateProduct(`{{this.product._id}}`)">❌</button></td>
             </tr>
             {{/each}}
         </tbody>
     </table>
+
+    {{!-- <div class="row justify-content-between">
+
+        {{#each cartProducts.products}}
+        <div class="card mb-3" style="width: 18rem;">
+
+            <img src="/products/{{this.product.thumbnails}}" class="card-img-top" alt="imagen producto">
+            <div class="card-body">
+                <h3 class="card-title">{{this.product.title}}</h3>
+                <h5>Categoría: {{this.product.category}}</h5>
+                <p>Precio: $<strong>{{this.product.price}}</strong></p>
+                <p>Cantidad: <strong>{{this.quantity}}</strong></p>
+            </div>
+        </div>
+        {{/each}}
+    </div> --}}
+
+    <div>
+        {{!-- <form action="/api/carts/{{user.cart}}/purchase" method="post" target="_blank"> --}}
+    
+
+                <button id="button">Comprar</button>
+            </form>
+
+    </div>
 </div>
 
-<script src="/js/eliminateProduct.js" ></script>
+<script>
+    const button = document.getElementById("button");
+    button.addEventListener("click", async () => {
+        const res = await fetch("/api/payment/create-checkout-session");
+        
+            const data = await res.json(); 
+            window.location.href = data.url //carga la url de la api de pago (url esta dentro del json data)
 
+    })
+</script>
