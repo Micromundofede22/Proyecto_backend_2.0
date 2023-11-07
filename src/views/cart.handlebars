@@ -28,29 +28,8 @@
         </tbody>
     </table>
 
-    {{!-- <div class="row justify-content-between">
-
-        {{#each cartProducts.products}}
-        <div class="card mb-3" style="width: 18rem;">
-
-            <img src="/products/{{this.product.thumbnails}}" class="card-img-top" alt="imagen producto">
-            <div class="card-body">
-                <h3 class="card-title">{{this.product.title}}</h3>
-                <h5>Categoría: {{this.product.category}}</h5>
-                <p>Precio: $<strong>{{this.product.price}}</strong></p>
-                <p>Cantidad: <strong>{{this.quantity}}</strong></p>
-            </div>
-        </div>
-        {{/each}}
-    </div> --}}
-
     <div>
-        {{!-- <form action="/api/carts/{{user.cart}}/purchase" method="post" target="_blank"> --}}
-    
-
-                <button id="button">Comprar</button>
-            </form>
-
+        <button id="button" class="btn btn-success">Comprar</button>
     </div>
 </div>
 
@@ -58,9 +37,8 @@
     const button = document.getElementById("button");
     button.addEventListener("click", async () => {
         const res = await fetch("/api/payment/create-checkout-session");
-        
-            const data = await res.json(); 
-            window.location.href = data.url //carga la url de la api de pago (url esta dentro del json data)
+        const data = await res.json();
+        window.location.href = data.url //carga la url de la api de pago (url esta dentro del json data)
 
     })
 </script>

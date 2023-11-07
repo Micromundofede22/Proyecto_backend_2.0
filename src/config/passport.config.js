@@ -13,6 +13,12 @@ import dayjs from "dayjs";
 //variables entorno
 const JWT_PRIVATE_KEY = config.keyPrivateJWT;
 const ADMIN_EMAIL = config.ADMIN_EMAIL;
+const CLIENTID= config.CLIENTID;
+const CLIENTSECRET= config.CLIENTSECRET;
+const CALLBACKURL= config.CALLBACKURL
+const GOOGLECLIENTID= config.GOOGLECLIENTID;
+const GOOGLECLIENTSECRET= config.GOOGLECLIENTSECRET;
+const GOOGLECALLBACKURL= config.GOOGLECALLBACKURL
 
 
 const LocalStrategy = local.Strategy;        //estrategia local
@@ -84,9 +90,9 @@ const initializePassport = () => {
     }));
 
     passport.use("github", new GitHubStrategy({
-        clientID: "Iv1.d5fe56e994ba152a",
-        clientSecret: "3ae4422147ceb4569eeec50d72d28d2a78a1e29a",
-        callbackURL: "http://localhost:8080/api/session/githubcallback"
+        clientID: CLIENTID,
+        clientSecret: CLIENTSECRET,
+        callbackURL: CALLBACKURL
     }, async (accessToken, refreshToken, profile, done) => {
         // console.log(profile)
         try {
@@ -119,9 +125,9 @@ const initializePassport = () => {
 
 
     passport.use("googlePass", new GoogleStrategy({
-        clientID: "677009444232-m39194megnhvte4295dih3j2hhjit2cf.apps.googleusercontent.com",
-        clientSecret: "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",
-        callbackURL: "http://localhost:8080/api/session/googlecallback"
+        clientID: GOOGLECLIENTID,
+        clientSecret: GOOGLECLIENTSECRET,
+        callbackURL: GOOGLECALLBACKURL
     },
         async (accessToken, refreshToken, profile, done) => {
             try {

@@ -24,5 +24,14 @@ export default{
     keyPrivateJWT: process.env.JWT_PRIVATE_KEY,       //clave privada cookie
     nodemailerUSER: process.env.NODEMAILER_USER,
     nodemailerPASS: process.env.NODEMAILER_PASS,
+    // GIT LOGIN
+    CLIENTID: process.env.CLIENTID,
+    CLIENTSECRET: process.env.CLIENTSECRET,
+    CALLBACKURL: process.env.CALLBACKURL,
+    // GOOGLE LOGIN
+    GOOGLECLIENTID: process.env.GOOGLECLIENTID,
+    GOOGLECLIENTSECRET: process.env.GOOGLECLIENTSECRET,
+    GOOGLECALLBACKURL: process.env.GOOGLECALLBACKURL,
+
     KEY_STRIPE: process.env.KEY_STRIPE               //clave privada api de pagos stripe
 };

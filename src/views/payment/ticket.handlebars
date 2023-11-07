@@ -1,4 +1,4 @@
-<div class="row justify-content-center">
+<div class="row justify-content-center contenedor">
 
     <div class="card" style="width: 24rem;">
 
@@ -31,6 +31,25 @@
         <h4>Fecha: {{dateTime}}</h4>
         <div class="card-body">
             <a href="http://localhost:8080/products/views" class="card-link">Volver al inicio</a>
+            <button id="crearpdf">Generar PDF</button>
         </div>
     </div>
 </div>
+
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+    let boton = document.getElementById("crearpdf");
+    let container = document.getElementById("contenedor");
+ 
+    boton.addEventListener("click", event => {
+        event.preventDefault();
+        boton.style.display = "none";
+        window.print();
+    }, false);
+ 
+    container.addEventListener("click", event => {
+        boton.style.display = "initial";
+    }, false);
+ 
+}, false);
+</script>
