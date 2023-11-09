@@ -1,6 +1,6 @@
 import winston from "winston";
 import config from "./config/config.js";
-import moment from "moment";
+import dayjs from "dayjs";
 
 const createLogger = env => {
     if (env == "PROD") { //environment de PRODUCCION
@@ -19,7 +19,7 @@ const createLogger = env => {
                     level: "error",
                     format: winston.format.combine(
                         winston.format.timestamp({
-                            format: moment().format("DD/MM/YYYY HH:mm:ss")
+                            format: dayjs().format("DD/MM/YYYY HH:mm")
                         }), //guarda fecha y hora del log
                         // winston.format.simple()     //guarda en formato de texto simple, sino json
                     )
@@ -29,7 +29,7 @@ const createLogger = env => {
                     format: winston.format.combine(
                         winston.format.colorize(), // aplica colores a los niveles
                         winston.format.timestamp({
-                            format: moment().format("DD/MM/YYYY HH:mm:ss")
+                            format: dayjs().format("DD/MM/YYYY HH:mm")
                         }),
                         winston.format.simple()
                     )
@@ -52,7 +52,7 @@ const createLogger = env => {
                     format: winston.format.combine(
                         winston.format.colorize(), // aplica colores a los niveles
                         winston.format.timestamp({
-                            format: moment().format("DD/MM/YYYY HH:mm:ss")
+                            format: dayjs().format("DD/MM/YYYY HH:mm")
                         }),
                         winston.format.simple()
                     )

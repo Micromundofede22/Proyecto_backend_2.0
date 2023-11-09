@@ -38,17 +38,18 @@
 
 <script>
    document.addEventListener("DOMContentLoaded", () => {
+    //captura de pantalla sin el botón Generar pdf 
     let boton = document.getElementById("crearpdf");
     let container = document.getElementById("contenedor");
  
     boton.addEventListener("click", event => {
         event.preventDefault();
-        boton.style.display = "none";
+        boton.style.display = "none"; 
         window.print();
     }, false);
  
     container.addEventListener("click", event => {
-        boton.style.display = "initial";
+        boton.style.display = "initial"; 
     }, false);
  
 }, false);

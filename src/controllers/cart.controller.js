@@ -50,20 +50,23 @@ export const createInCartController = async (req, res) => {
 
         if ((cart._id).toString() !== user.cart) return res.sendRequestError("El id del Usuario no coincide con nuestra base de datos");
         if (user.email == product.owner) return res.sendRequestError("Usted no puede comprar productos de su autoría");
+        // console.log(cart.products)
         let acum = 0;
-        cart.products.map((datos) => {
-            if (datos.product == pid) {
+        cart.products.map((item) => {
+
+            if (item.product == pid) { //verifica si producto ya esta en cart
                 acum++;
-                datos.quantity++;
+                //si cantidad es menor a stock, aumenta cantidad, sino el máximo de cantidad no sobrepasa el stock
+                (item.quantity < product.stock.toString()) ? item.quantity++ : item.quantity = product.stock; 
             };
         });
-
         if (acum === 0) cart.products.push({ product: pid, quantity: 1 });
+
 
         await CartService.updateCart({ _id: cid }, cart);      //1ero actualizo el carrito
         const result = await CartService.getByIdPopulate(cid); //2do lo busco. Populateo la info de product en products para que aparezca en el carrito y asi se relacionen ambas bases de datos(cart y products)
-        res.sendSuccess(result);                               //3ero lo mando al json
         req.app.get("socketio").emit("updateCart", await CartService.getByIdPopulate(cid));
+        res.sendSuccess(result);                               //3ero lo mando al json
     } catch (error) {
         res.sendServerError(error.message);
     };
@@ -188,7 +191,7 @@ export const purchaseController = async (req, res) => {
                 const sumaMount = montoTotal.reduce((acc, elem) => acc + elem, 0);
 
                 //EXTRAER EMAIL
-                const users = await UserService.getUser(); 
+                const users = await UserService.getUser();
                 const user = users.filter((data) => data.cart == (cart._id).toString()); //filtro el usuario que tiene el carrito en cuestion
                 const email = user[0].email; //entro al array que tiene mi user en la posicion 0, y luego a su propiedad email
 
@@ -199,7 +202,7 @@ export const purchaseController = async (req, res) => {
                     : 1;
 
 
-                    
+
                 //CREACIÓN TICKET
                 if (sumaMount > 0) {
                     const newTicket = await TicketService.create({
@@ -210,13 +213,13 @@ export const purchaseController = async (req, res) => {
                     });
                     //busco el ticket en la base de datos
                     const ticket = await TicketService.getByData({ code: newTicket.code });
-                    const dateTime= dayjs(ticket.purchase_datetime).format("DD/MM/YYYY HH:mm"); 
+                    const dateTime = dayjs(ticket.purchase_datetime).format("DD/MM/YYYY HH:mm");
                     // console.log(ticket, typeof ticket);
                     //envio mail con ticket
                     await sendEmailTiketPurchase(ticket);
                     logger.info("Purchase success");
                     req.app.get("socketio").emit("updateCart", await CartService.getByIdPopulate(cid));
-                    res.render("payment/ticket", {ticket, dateTime})
+                    res.render("payment/ticket", { ticket, dateTime })
                     // res.sendSuccess(ticket);
 
                 } else {
@@ -236,4 +239,3 @@ export const purchaseController = async (req, res) => {
 
 
 
-  

@@ -29,16 +29,25 @@
     </table>
 
     <div>
+        {{#if (igual user.length 0)}}
+        <button id="button" disabled="true" class="btn btn-success">Comprar</button>
+        {{else}}
         <button id="button" class="btn btn-success">Comprar</button>
+        {{/if}}
     </div>
 </div>
 
 <script>
+
     const button = document.getElementById("button");
     button.addEventListener("click", async () => {
         const res = await fetch("/api/payment/create-checkout-session");
         const data = await res.json();
-        window.location.href = data.url //carga la url de la api de pago (url esta dentro del json data)
+        if(data.status == "sinstock") data
+        else window.location.href = data.url
+        console.log(data)
+        //carga la url de la api de pago (url esta dentro del json data)
+        
 
     })
 </script>

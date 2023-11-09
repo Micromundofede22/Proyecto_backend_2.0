@@ -1,5 +1,5 @@
 <div>
-    <form class="col-5" action="/api/users/{{user}}/documents" method="post" enctype="multipart/form-data">
+    <form id="form" class="col-5" action="/api/users/{{user}}/documents" enctype="multipart/form-data" method="post" >
   
         <div class="mb-3">
             <h6>Identificación</h6><input type="file" name="identificacion">
@@ -11,7 +11,7 @@
             <h6>Comprobante estado de cuenta</h6><input type="file" name="comprobanteCuenta">
         </div>
 
-        <button type="submit" class="btn btn-success">Subir</button>
+        <button type="submit" id="button" class="btn btn-success">Subir</button>
     </form>
 </div>
 

@@ -28,7 +28,7 @@ describe("Testing Ecommers Micromundo - Ruta /api/products ", () => {
         stock: faker.number.int(50),
         status: faker.datatype.boolean(),
     };
-    const productId = "64efe15934fdc0249efc187e";
+    const productId = "6543e753acf81bfbcdbfdb27";
 
     it("Logueo de user para acceder a los products", async () => {              //testeamos la autorización del endpoint
         const result = await requester.post("/api/session/login").send(user); //solicitante

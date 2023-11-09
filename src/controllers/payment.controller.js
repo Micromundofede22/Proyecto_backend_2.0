@@ -14,11 +14,12 @@ export const createSessionController = async (req, res) => {
         const cid = req.user.user.cart.toString();
         const cart = await CartService.getByIdPopulate(cid);
 
-        const line_items= []
+        const line_items = []; //productos con stock
 
         const promises = cart.products.map(async (item) => {
             const product = await ProductService.getById(item.product._id.toString());
             // // console.log(product)
+            //solo pasan a ser cobrados los productos que tengan stock disponibles
             if (item.quantity <= product.stock) {
                 return line_items.push({
                     price_data: {
@@ -27,29 +28,38 @@ export const createSessionController = async (req, res) => {
                             description: item.product.description.toString()
                         },
                         currency: "usd",
-                        unit_amount: 900000
+                        unit_amount: item.product.price
                     },
                     quantity: item.quantity
                 });
             };
         });
         // console.log(Array.isArray(line_items) )
-        
+
 
         Promise.all(promises)
             .then(async () => {
                 // console.log(line_items)
-              const session= await stripe.checkout.sessions.create({
+                if (line_items.length > 0) {
 
-                    line_items: line_items,
-                    mode: "payment",
-                    success_url: 'http://localhost:8080/api/payment/success',
-                    cancel_url: 'http://localhost:8080/api/payment/cancel'
-                });
+                    const session = await stripe.checkout.sessions.create({
 
-                return res.json(session);
+                        line_items: line_items,
+                        mode: "payment",
+                        success_url: 'http://localhost:8080/api/payment/success',
+                        cancel_url: 'http://localhost:8080/api/payment/cancel'
+                    });
+
+                    return res.json(session);
+
+                } else{
+                   await res
+                   .json({
+                    status: "sinstock", 
+                    message: `no hay stock suficiente`})
+                };
             })
-            .catch((error) => console.log(error))
+            .catch((error) => console.log(error.message));
 
     } catch (error) {
         logger.error(error.message);
@@ -59,11 +69,11 @@ export const createSessionController = async (req, res) => {
 };
 
 export const successPaymentController = (req, res) => {
-    const user= req.user.user;
-    res.render("payment/success", {user});
+    const user = req.user.user;
+    res.render("payment/success", { user });
 };
 
 export const cancelPaymentController = (req, res) => {
-    const user= req.user.user;
-    res.render("payment/cancel", {user});
+    const user = req.user.user;
+    res.render("payment/cancel", { user });
 };

@@ -77,10 +77,11 @@ export const changeRolController = async (req, res) => {
 
 export const viewDocumentsController = async (req, res) => {
     try {
-        const user = req.user.user._id;
+        const user = req.user.user._id.toString();
         // console.log(user)
-        res.render("uploadDocuments", { user });
+        res.render("uploadDocuments", {user} );
     } catch (error) {
+        
         res.sendServerError(error.message);
     }
 
@@ -96,16 +97,18 @@ export const documentController = async (req, res) => {
 
         const documents = user.documents;
         //DOCUMENTOS DE IDENTIFICACION
+        //si no existe, lo pushea
         if (documentsUpload.identificacion && !documents.some(item => item.name.includes("identificacion"))) {
             documents.push({
                 name: documentsUpload.identificacion[0].filename,
                 reference: documentsUpload.identificacion[0].path,
             });
-        } else if (documentsUpload.identificacion) { //si se sube el documento, que sobreescriba el que ya  existe
+        //si ya existe, lo sobreescribe    
+        } else if (documentsUpload.identificacion) { 
             documents.map(data => {
                 if (data.name.includes("identificacion")) {
                     data.name = documentsUpload.identificacion[0].filename,
-                        data.reference = documentsUpload.identificacion[0].path
+                        data.reference = documentsUpload.identificacion[0].path //ruta al archivo
                 };
             });
         };
@@ -144,8 +147,10 @@ export const documentController = async (req, res) => {
         // console.log(documents)
         await UserService.updateUser(id, { documents: documents });
         res.createdSuccess("Documentos cargados exitosamente");
+        // res.redirect("/api/users/rolechange")
 
     } catch (error) {
+        console.log("por aca")
         res.sendServerError(error.message);
     };
 };

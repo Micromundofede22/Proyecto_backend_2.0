@@ -11,6 +11,7 @@ const addLink = async (_id) => {
             method: "POST", // ruta post de la viewcart
         })
         const result = await res.json()
+        // console.log(result)
         if (result.status === "error") throw new Error(result.error) //si el json, que ahora esta
         //  dentro de la const result, da error en su status, me tira un nuevo error y throw detiene la
         // ejecucion siguiente 

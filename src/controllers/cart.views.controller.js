@@ -11,7 +11,8 @@ export async function cartViewController (req, res) {
         const cart= await cartSinPop.populate("products.product");//aplico populate acá
        if (cart){
         const cartProducts= { products: cart.products.map(prod => prod.toObject())}; //hago un nuevo objeto por cada producto, y le aplico la propiedad products. toObject me permite enviar el json a formato objeto para visualizarlos
-        const user = req.user.user; 
+        const user = req.user.user;
+        user.length= cart.products.length 
         res.render("cart", { cartProducts,user, lean: true});
     }else{
         res.status(401).render("errors/base", {error:"No existe carrito"});
