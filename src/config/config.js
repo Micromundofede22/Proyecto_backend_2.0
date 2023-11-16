@@ -33,5 +33,6 @@ export default{
     GOOGLECLIENTSECRET: process.env.GOOGLECLIENTSECRET,
     GOOGLECALLBACKURL: process.env.GOOGLECALLBACKURL,
 
-    KEY_STRIPE: process.env.KEY_STRIPE               //clave privada api de pagos stripe
+    KEY_STRIPE: process.env.KEY_STRIPE,               //clave privada api de pagos stripe
+    TOKEN_MP: process.env.TOKEN_MP
 };

@@ -77,9 +77,9 @@ export const changeRolController = async (req, res) => {
 
 export const viewDocumentsController = async (req, res) => {
     try {
-        const user = req.user.user._id.toString();
+        const userID = req.user.user._id.toString();
         // console.log(user)
-        res.render("uploadDocuments", {user} );
+        res.render("uploadDocuments", {userID} );
     } catch (error) {
         
         res.sendServerError(error.message);
@@ -89,10 +89,13 @@ export const viewDocumentsController = async (req, res) => {
 
 export const documentController = async (req, res) => {
     try {
-        const id = req.params.uid
+        
+        const id = req.params.uid.toString()
+        // console.log(id)
         const documentsUpload = req.files; //objeto, y cada archivo que tiene es un array
+        console.log(documentsUpload)
+
         const user = await UserService.getUserById(id)
-        // console.log(user)
         // console.log(typeof documentsUpload)
 
         const documents = user.documents;
@@ -146,7 +149,7 @@ export const documentController = async (req, res) => {
 
         // console.log(documents)
         await UserService.updateUser(id, { documents: documents });
-        res.createdSuccess("Documentos cargados exitosamente");
+        res.send("Documentos cargados exitosamente");
         // res.redirect("/api/users/rolechange")
 
     } catch (error) {

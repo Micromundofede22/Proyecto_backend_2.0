@@ -3,6 +3,8 @@ import config from "../config/config.js";
 import { CartService, ProductService } from "../services/services.js";
 import logger from "../loggers.js";
 
+//PASARELA DE PAGOS STRIPE
+
 const KEY_STRIPE = config.KEY_STRIPE;
 
 const stripe = new Stripe(KEY_STRIPE);

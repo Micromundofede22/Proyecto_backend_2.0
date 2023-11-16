@@ -6,6 +6,7 @@ import { __dirname } from "../utils.js";
 const storage = multer.diskStorage({ // acá le digo que se grabe en disco de almacenamiento
 
     destination: function (req, file, cb) {
+
         if(file.fieldname == "domicilio" || file.fieldname == "comprobante" || file.fieldname =="identificacion"){
             cb(null, __dirname + "/public/documents"); //acá le digo que se guarde en carpeta public
         };

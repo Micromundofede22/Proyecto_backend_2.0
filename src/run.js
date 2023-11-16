@@ -13,7 +13,7 @@ import { messagesModel } from "./models/message.model.js";
 import errorMiddleware from "./middleware/error.middleware.js";
 import UserRouter from "./routers/users.r.js";
 import PaymentRouter from "./routers/payment.r.js";
-
+import PaymentMPRouter from "./routers/payment.MP.r.js"
 
 
 
@@ -35,6 +35,7 @@ const run = (io, app) => {
     const mockRouter = new MockRouter();
     const loggerRouter = new LoggerRouter();
     const paymentRouter= new PaymentRouter();
+    const paymentMPRouter= new PaymentMPRouter();
 
     app.get("/", (req, res) => { res.render("sessions/login") });
 
@@ -44,6 +45,7 @@ const run = (io, app) => {
     app.use('/api/carts', passportCall("jwt"), cartRouter.getRouter());
     app.use('/api/users', passportCall("jwt"), userRouter.getRouter());
     app.use('/api/payment', paymentRouter.getRouter());
+    app.use('/api/payment/mercado-pago', paymentMPRouter.getRouter());
     app.use("/session", sessionViewsRouter.getRouter());
     app.use("/products", passportCall("jwt"), productViewRouter.getRouter());
     app.use("/cart", passportCall("jwt"), cartViewRouter.getRouter());

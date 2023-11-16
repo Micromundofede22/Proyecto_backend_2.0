@@ -1,5 +1,7 @@
 <div>
-    <form id="form" class="col-5" action="/api/users/{{user}}/documents" enctype="multipart/form-data" method="post" >
+    <a id="user" href="/{{userID}}"></a> 
+
+    <form id="form" method="post" class="col-5"  enctype="multipart/form-data" onsubmit=functionDatos()>
   
         <div class="mb-3">
             <h6>Identificación</h6><input type="file" name="identificacion">
@@ -11,7 +13,22 @@
             <h6>Comprobante estado de cuenta</h6><input type="file" name="comprobanteCuenta">
         </div>
 
-        <button type="submit" id="button" class="btn btn-success">Subir</button>
+        <input type="submit"  class="btn btn-success">
     </form>
 </div>
+
+<script>
+    const a= document.getElementById("user");
+    const href= a.getAttribute("href");
+    const userID= href.match(/\/(.+)/)[1]
+    console.log(userID);
+
+   async function functionDatos(userID){
+    
+        const res= await fetch(`/api/users/${userID}/documents`,{method: "post"});
+        const data= await res.json();
+        console.log(data)
+    }
+
+</script>
 

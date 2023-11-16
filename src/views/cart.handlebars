@@ -30,9 +30,17 @@
 
     <div>
         {{#if (igual user.length 0)}}
-        <button id="button" disabled="true" class="btn btn-success">Comprar</button>
+        <button id="button" disabled="true" class="btn btn-success">Comprar Stripe</button>
         {{else}}
         <button id="button" class="btn btn-success">Comprar</button>
+        {{/if}}
+    </div>
+
+     <div>
+        {{#if (igual user.length 0)}}
+        <button id="buttonMP" disabled="true" class="btn btn-success">Comprar Mercado Pago</button>
+        {{else}}
+        <button id="buttonMP" class="btn btn-success">Comprar Mercado Pago</button>
         {{/if}}
     </div>
 </div>
@@ -40,6 +48,8 @@
 <script>
 
     const button = document.getElementById("button");
+    const buttonMP = document.getElementById("buttonMP");
+
     button.addEventListener("click", async () => {
         const res = await fetch("/api/payment/create-checkout-session");
         const data = await res.json();
@@ -47,7 +57,14 @@
         else window.location.href = data.url
         console.log(data)
         //carga la url de la api de pago (url esta dentro del json data)
-        
-
     })
+
+    buttonMP.addEventListener("click", async () => {
+        const res = await fetch("/api/payment/mercado-pago/create-session", {method: "post"});
+        const data = await res.json();
+        console.log("data:", data);
+        window.location.href = data.init_point;
+    })
+
+
 </script>
