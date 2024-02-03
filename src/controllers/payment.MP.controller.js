@@ -82,9 +82,10 @@ export const receiveWebhookController = async (req, res) => {
     //mercado pago manda a mi servidor dos peticiones por query, la segunda type payment la capturo
     const payment = req.query;
     // console.log(payment);
+    //CON ESTO CONFIRMAMOS LOS DATOS DE LA TRANSACCIÓN 
     try {
         if (payment.type === "payment") {
-            const data = await pagoMP.get({ id: payment["data.id"] });
+            const data = await pagoMP.get({ id: payment[data.id] });
             console.log(data)
         }
         res.sendSuccess("ok")

@@ -12,10 +12,10 @@ const JWT_COOKIE_NAME = config.cookieNameJWT;
 const JWT_PRIVATE_KEY = config.keyPrivateJWT;
 
 //DIRNAME
-//1. obtengo la ruta absoluta de mi archivo. fileURLToPath me crea una ruta.
-//import.meta.url apunta a mi archivo actual
+//1. obtengo la ruta absoluta de mi archivo. fileURLToPath me crea una ruta de la url del archivo.
+//import.meta.url apunta a mi archivo actual, y el fileurltopath elimina el prefijo "file://" del archivo.
 const __filename = fileURLToPath(import.meta.url);
-export const __dirname = dirname(__filename); //ruta de la carpeta del archivo actual
+export const __dirname = dirname(__filename); //ruta de la carpeta del archivo actual, sacando el archivo
 // export const __dirname = join(srcDirname, "..") // agregar fragmentos a la ruta actual
 
 

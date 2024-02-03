@@ -177,7 +177,7 @@ export const offlineUserController = async (req, res) => {
 
         const offlineUser = users.map(async (item) => {
             const lastConnection = dayjs(item.last_connection); //ultima conexión
-            const difference = currentDate.diff(lastConnection, "day", true); //calcula diferencias entre dos fechas(hoy y ultima conexion)
+            const difference = currentDate.diff(lastConnection, "day"); //calcula diferencias entre dos fechas(hoy y ultima conexion)
             // console.log(difference);
 
             if (difference > 2) {
@@ -191,7 +191,7 @@ export const offlineUserController = async (req, res) => {
             .then(() => {
                 res.sendSuccess("Cuentas eliminadas con éxito");
             })
-            .catch(error => {
+            .catch((error) => {
                 return res.sendError(error);
             })
     } catch (error) {
